@@ -125,6 +125,7 @@ func main() {
 	)
 	postUrl := make(map[string]*Post)
 	mux := &sync.Mutex{}
+	page := 0
 	collector.OnHTML("a.result-title.hdrlnk", func(e *colly.HTMLElement) {
 		// Post tiles from query.
 		// Grab the post's link.
@@ -143,6 +144,8 @@ func main() {
 	collector.OnHTML("a.button.next", func(e *colly.HTMLElement) {
 		// Next button from query.
 		// Follow it's link to request the next page.
+		page = page + 1
+		l.Println("On page: " + string(page))
 		url := e.Attr("href")
 		visited, err := collector.HasVisited(url)
 		if err != nil {
