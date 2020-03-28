@@ -19,6 +19,8 @@ type Post struct {
 	CapPercent  int
 	Color       string
 	HasLink     bool
+	Text        string
+	Title       string
 	IsCandidate bool
 	Make        string
 	Price       int
@@ -27,7 +29,6 @@ type Post struct {
 	Year        int
 	Query       []string
 	AttrGroup   map[string]string
-	marsh
 }
 
 type Preset struct {

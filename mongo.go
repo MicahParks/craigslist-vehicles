@@ -14,7 +14,7 @@ func insertPosts(collection *mongo.Collection, posts []*Post) error {
 	for _, v := range posts {
 		many = append(many, v)
 	}
-	_, err := collection.InsertMany(context.Background(), many, opts)
+	_, err := collection.InsertMany(context.TODO(), many, opts)
 	if err != nil {
 		return err
 	}

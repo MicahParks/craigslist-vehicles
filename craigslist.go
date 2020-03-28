@@ -160,6 +160,9 @@ func main() {
 			return
 		}
 		if err := e.Request.Visit(url); err != nil {
+			if err.Error() == "URL already visited" {
+				return
+			}
 			l.Fatalf("error getting next page: \"%s\"", err.Error())
 		}
 	})
@@ -182,11 +185,11 @@ func main() {
 			l.Fatalln(err.Error())
 		}
 		price, err := strconv.Atoi(strings.TrimPrefix(m.PriceStr, "$"))
-		if err != nil {
-			m.PriceStr = "UNSPECIFIED"
+		if err == nil {
+			post.Price = price
 		}
-		post.marsh = *m
-		post.Price = price
+		post.Text = m.Text
+		post.Title = m.Title
 		post.titleBody = strings.ToLower(post.Title + "\n" + post.Text)
 		post.attr(e, l)
 		post.getMake()
@@ -198,7 +201,7 @@ func main() {
 	if err := collector.Visit(start); err != nil {
 		l.Fatalln(err.Error())
 	}
-	posts := make([]*Post, len(postUrl))
+	posts := make([]*Post, 0, len(postUrl))
 	for _, v := range postUrl {
 		posts = append(posts, v)
 	}
