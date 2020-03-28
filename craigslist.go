@@ -210,7 +210,7 @@ func main() {
 		post.hasLink()
 		post.year()
 		post.Url = url
-		post.Query = append(post.Query, domain)
+		post.Query = append(post.Query, subdomain)
 	})
 	if err := collector.Visit(start); err != nil {
 		l.Fatalln(err.Error())
