@@ -198,8 +198,10 @@ func main() {
 		post.Title = m.Title
 		post.titleBody = strings.ToLower(post.Title + "\n" + post.Text)
 		post.attr(e, l)
-		post.getMake()
 		post.capPercent()
+		post.color()
+		post.getMake()
+		post.hasLink()
 		post.year()
 		post.Url = url
 		post.Query = append(post.Query, domain)
