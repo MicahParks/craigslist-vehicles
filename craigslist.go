@@ -38,13 +38,17 @@ func (p *Post) attr(e *colly.HTMLElement, l *log.Logger) {
 
 func (p *Post) capPercent() {
 	count := 0
+	total := 0
 	for _, v := range p.Title {
-		if unicode.IsUpper(v) {
-			count += 1
+		if unicode.IsLetter(v) {
+			total += 1
+			if unicode.IsUpper(v) {
+				count += 1
+			}
 		}
 	}
 	if count > 0 {
-		p.CapPercent = len(p.Title) / count * 100
+		p.CapPercent = count / total * 100
 	}
 }
 
