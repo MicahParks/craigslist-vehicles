@@ -17,11 +17,12 @@ type Post struct {
 	Make        string
 	Model       string
 	Odometer    int
-	Price       int
-	Text        string
-	Title       string
+	Price       int    `selector:".price"`
+	Text        string `selector:"#postingbody"`
+	Title       string `selector:"#titletextonly"`
 	Year        int
-	Query       Query
+	Query       []string
+	AttrGroup   map[string]string
 }
 
 type Preset struct {
