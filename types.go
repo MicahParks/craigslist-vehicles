@@ -15,11 +15,11 @@ type Post struct {
 	HasLink     bool
 	IsCandidate bool
 	Make        string
-	Model       string
 	Odometer    int
 	Price       int    `selector:".price"`
 	Text        string `selector:"#postingbody"`
 	Title       string `selector:"#titletextonly"`
+	titleBody   string
 	Year        int
 	Query       []string
 	AttrGroup   map[string]string
