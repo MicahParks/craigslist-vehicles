@@ -187,7 +187,7 @@ func main() {
 		if !ok {
 			post = &Post{
 				AttrGroup: make(map[string]string),
-				Query:     make([]string, 1),
+				Query:     make([]string, 0, 1),
 			}
 			postUrl[url] = post
 		}
