@@ -9,7 +9,7 @@ type List struct {
 }
 
 type Post struct {
-	Url         string
+	Url         string `bson:"_id"`
 	CapPercent  int
 	Color       string
 	HasLink     bool

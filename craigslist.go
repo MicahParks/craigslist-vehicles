@@ -110,6 +110,10 @@ func (p *Post) hasLink() {
 
 func main() {
 	l := log.New(os.Stdout, "cano cars scraper:", log.LstdFlags|log.LUTC|log.Lshortfile)
+	collection, err := mongoInit()
+	if err != nil {
+		l.Fatalln(err.Error())
+	}
 	// frederick, richmond, washingtondc
 	domain := "%s.craigslist.org"
 	subdomain := "richmond"
@@ -119,7 +123,7 @@ func main() {
 		colly.AllowedDomains(domain),
 		colly.IgnoreRobotsTxt(),
 	)
-	posts := make(map[string]*Post)
+	postUrl := make(map[string]*Post)
 	mux := &sync.Mutex{}
 	collector.OnHTML("a.result-title.hdrlnk", func(e *colly.HTMLElement) {
 		// Post tiles from query.
@@ -156,10 +160,10 @@ func main() {
 		url := e.Request.URL.String()
 		var post *Post
 		mux.Lock()
-		post, ok := posts[url]
+		post, ok := postUrl[url]
 		if !ok {
 			post = &Post{}
-			posts[url] = post
+			postUrl[url] = post
 		}
 		mux.Unlock()
 		if err := e.Unmarshal(post); err != nil {
@@ -176,8 +180,12 @@ func main() {
 	if err := collector.Visit(start); err != nil {
 		l.Fatalln(err.Error())
 	}
-	for _, v := range posts {
-		// TODO Insert into mongo
+	posts := make([]*Post, len(postUrl))
+	for _, v := range postUrl {
+		posts = append(posts, v)
+	}
+	if err := insertPosts(collection, posts); err != nil {
+		l.Fatalln(err.Error())
 	}
 }
 
