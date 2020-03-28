@@ -8,6 +8,12 @@ type List struct {
 	Subs  []string
 }
 
+type marsh struct {
+	PriceStr string `selector:".price"`
+	Text     string `selector:"#postingbody"`
+	Title    string `selector:"#titletextonly"`
+}
+
 type Post struct {
 	Url         string `bson:"_id"`
 	CapPercent  int
@@ -15,14 +21,13 @@ type Post struct {
 	HasLink     bool
 	IsCandidate bool
 	Make        string
+	Price       int
 	Odometer    int
-	Price       int    `selector:".price"`
-	Text        string `selector:"#postingbody"`
-	Title       string `selector:"#titletextonly"`
 	titleBody   string
 	Year        int
 	Query       []string
 	AttrGroup   map[string]string
+	marsh
 }
 
 type Preset struct {

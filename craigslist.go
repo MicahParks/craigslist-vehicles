@@ -37,7 +37,9 @@ func (p *Post) capPercent() {
 			count += 1
 		}
 	}
-	p.CapPercent = len(p.Title) / count * 100
+	if count > 0 {
+		p.CapPercent = len(p.Title) / count * 100
+	}
 }
 
 func (p *Post) color() {
@@ -103,13 +105,15 @@ func (p *Post) getMake() {
 }
 
 func (p *Post) hasLink() {
-	if strings.Contains(p.titleBody, ".com") {
+	if strings.Contains(p.titleBody, ".com") ||
+		strings.Contains(p.titleBody, "http") ||
+		strings.Contains(p.titleBody, "www") {
 		p.HasLink = true
 	}
 }
 
 func main() {
-	l := log.New(os.Stdout, "cano cars scraper:", log.LstdFlags|log.LUTC|log.Lshortfile)
+	l := log.New(os.Stdout, "cano cars scraper: ", log.LstdFlags|log.LUTC|log.Lshortfile)
 	collection, err := mongoInit()
 	if err != nil {
 		l.Fatalln(err.Error())
@@ -122,6 +126,7 @@ func main() {
 	collector := colly.NewCollector(
 		colly.AllowedDomains(domain),
 		colly.IgnoreRobotsTxt(),
+		colly.DetectCharset(),
 	)
 	postUrl := make(map[string]*Post)
 	mux := &sync.Mutex{}
@@ -145,7 +150,7 @@ func main() {
 		// Next button from query.
 		// Follow it's link to request the next page.
 		page = page + 1
-		l.Println("On page: " + string(page))
+		l.Printf("On page: %d have %d posts", page, len(postUrl))
 		url := e.Attr("href")
 		visited, err := collector.HasVisited(url)
 		if err != nil {
@@ -165,13 +170,23 @@ func main() {
 		mux.Lock()
 		post, ok := postUrl[url]
 		if !ok {
-			post = &Post{}
+			post = &Post{
+				AttrGroup: make(map[string]string),
+				Query:     make([]string, 1),
+			}
 			postUrl[url] = post
 		}
 		mux.Unlock()
-		if err := e.Unmarshal(post); err != nil {
+		m := &marsh{}
+		if err := e.Unmarshal(m); err != nil {
 			l.Fatalln(err.Error())
 		}
+		price, err := strconv.Atoi(strings.TrimPrefix(m.PriceStr, "$"))
+		if err != nil {
+			m.PriceStr = "UNSPECIFIED"
+		}
+		post.marsh = *m
+		post.Price = price
 		post.titleBody = strings.ToLower(post.Title + "\n" + post.Text)
 		post.attr(e, l)
 		post.getMake()
