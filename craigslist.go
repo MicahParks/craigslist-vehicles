@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"unicode"
 
 	"github.com/gocolly/colly/v2"
@@ -113,12 +114,13 @@ func main() {
 	domain := "%s.craigslist.org"
 	subdomain := "richmond"
 	domain = fmt.Sprintf(domain, subdomain)
-	url := fmt.Sprintf("https://%s/search/cta?hasPic=1&bundleDuplicates=1", domain)
+	start := fmt.Sprintf("https://%s/search/cta?hasPic=1&bundleDuplicates=1", domain)
 	collector := colly.NewCollector(
 		colly.AllowedDomains(domain),
 		colly.IgnoreRobotsTxt(),
 	)
 	posts := make(map[string]*Post)
+	mux := &sync.Mutex{}
 	collector.OnHTML("a.result-title.hdrlnk", func(e *colly.HTMLElement) {
 		// Post tiles from query.
 		// Grab the post's link.
@@ -145,15 +147,21 @@ func main() {
 		if visited {
 			return
 		}
+		if err := e.Request.Visit(url); err != nil {
+			l.Fatalf("error getting next page: \"%s\"", err.Error())
+		}
 	})
 	collector.OnHTML("section.body", func(e *colly.HTMLElement) {
+		// Post page.
 		url := e.Request.URL.String()
 		var post *Post
+		mux.Lock()
 		post, ok := posts[url]
 		if !ok {
 			post = &Post{}
 			posts[url] = post
 		}
+		mux.Unlock()
 		if err := e.Unmarshal(post); err != nil {
 			l.Fatalln(err.Error())
 		}
@@ -165,6 +173,12 @@ func main() {
 		post.Url = url
 		post.Query = append(post.Query, domain)
 	})
+	if err := collector.Visit(start); err != nil {
+		l.Fatalln(err.Error())
+	}
+	for _, v := range posts {
+		// TODO Insert into mongo
+	}
 }
 
 func (p *Post) year() {
