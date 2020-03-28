@@ -88,6 +88,7 @@ func (p *Post) getMake() {
 		"ram":        "ram",
 		"ford":       "ford",
 		"lincoln":    "lincoln",
+		"mazda":      "mazda",
 		"gm":         "gm",
 		"gmc":        "gm",
 		"buick":      "buick",
