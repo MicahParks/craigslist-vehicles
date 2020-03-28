@@ -25,7 +25,7 @@ func main() {
 	subdomain := "richmond"
 	domain = fmt.Sprintf(domain, subdomain)
 	start := fmt.Sprintf("https://%s/search/cta?hasPic=1&bundleDuplicates=1", domain)
-	collector := colly.NewCollector(
+	c := colly.NewCollector(
 		colly.AllowedDomains(domain),
 		colly.IgnoreRobotsTxt(),
 		colly.DetectCharset(),
@@ -33,28 +33,30 @@ func main() {
 	postUrl := make(map[string]*Post)
 	mux := &sync.Mutex{}
 	page := 0
-	collector.OnHTML("a.result-title.hdrlnk", func(e *colly.HTMLElement) {
+	c.OnHTML("a.result-title.hdrlnk", func(e *colly.HTMLElement) {
 		// Post tiles from query.
 		// Grab the post's link.
 		url := e.Attr("href")
-		visited, err := collector.HasVisited(url)
+		visited, err := c.HasVisited(url)
 		if err != nil {
 			l.Fatalln(err.Error())
 		}
 		if visited {
 			return
 		}
-		if err := e.Request.Visit(url); err != nil {
-			l.Fatalf("error with URL: (%s) \"%s\"", url, err.Error())
-		}
+		go func() {
+			if err := e.Request.Visit(url); err != nil {
+				l.Fatalf("error with URL: (%s) \"%s\"", url, err.Error())
+			}
+		}()
 	})
-	collector.OnHTML("a.button.next", func(e *colly.HTMLElement) {
+	c.OnHTML("a.button.next", func(e *colly.HTMLElement) {
 		// Next button from query.
 		// Follow it's link to request the next page.
 		page = page + 1
 		l.Printf("On page: %d have %d posts", page, len(postUrl))
 		url := e.Attr("href")
-		visited, err := collector.HasVisited(url)
+		visited, err := c.HasVisited(url)
 		if err != nil {
 			l.Fatalln(err.Error())
 		}
@@ -68,7 +70,7 @@ func main() {
 			l.Fatalf("error getting next page: \"%s\"", err.Error())
 		}
 	})
-	collector.OnHTML("section.body", func(e *colly.HTMLElement) {
+	c.OnHTML("section.body", func(e *colly.HTMLElement) {
 		// Post page.
 		url := e.Request.URL.String()
 		var post *Post
@@ -102,9 +104,10 @@ func main() {
 		post.Url = url
 		post.Query = append(post.Query, subdomain)
 	})
-	if err := collector.Visit(start); err != nil {
+	if err := c.Visit(start); err != nil {
 		l.Fatalln(err.Error())
 	}
+	c.Wait()
 	posts := make([]*Post, 0, len(postUrl))
 	for _, v := range postUrl {
 		posts = append(posts, v)
