@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"os"
@@ -216,6 +217,17 @@ func main() {
 	posts := make([]*Post, 0, len(postUrl))
 	for _, v := range postUrl {
 		posts = append(posts, v)
+	}
+	f, err := os.Create("scrape.gob")
+	if err != nil {
+		l.Fatalln(err.Error())
+	}
+	enc := gob.NewEncoder(f)
+	if err = enc.Encode(posts); err != nil {
+		l.Fatalln(err.Error())
+	}
+	if err = f.Close(); err != nil {
+		l.Fatalln(err.Error())
 	}
 	if err := insertPosts(collection, posts); err != nil {
 		l.Fatalln(err.Error())
