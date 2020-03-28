@@ -18,13 +18,19 @@ import (
 func (p *Post) attr(e *colly.HTMLElement, l *log.Logger) {
 	e.ForEach("p.attrgroup", func(_ int, el *colly.HTMLElement) {
 		el.ForEach("span", func(_ int, elem *colly.HTMLElement) {
-			p.AttrGroup[el.Text] = elem.Text
-			if el.Text == "odometer:" && len(elem.Text) > 0 {
-				odo, err := strconv.Atoi(elem.Text)
-				if err != nil {
-					l.Fatalln(err.Error())
+			text := strings.TrimSpace(elem.Text)
+			split := strings.SplitN(text, ": ", 2)
+			if len(split) == 2 {
+				attribute := strings.TrimSpace(split[0])
+				value := strings.TrimSpace(split[1])
+				p.AttrGroup[attribute] = value
+				if attribute == "odometer" {
+					odo, err := strconv.Atoi(value)
+					if err != nil {
+						l.Fatalln(err.Error())
+					}
+					p.Odometer = odo
 				}
-				p.Odometer = odo
 			}
 		})
 	})
