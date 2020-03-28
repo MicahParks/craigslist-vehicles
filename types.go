@@ -35,6 +35,10 @@ type Preset struct {
 	Year    int
 }
 
+type Tile struct {
+	Link string `selector:"li.result-row:nth-child(1) > p:nth-child(2) > a:nth-child(3)"`
+}
+
 type Query struct {
 	Default bool
 	Url     string
