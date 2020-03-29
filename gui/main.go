@@ -67,8 +67,8 @@ func main() {
 			case <-o.death:
 				a.Quit()
 				return
-			case canv := <-o.canChan:
-				w.SetContent(canv)
+			case can := <-o.canChan:
+				w.SetContent(can)
 			}
 		}
 	}()
