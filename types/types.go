@@ -47,6 +47,6 @@ type Query struct {
 	Url     string
 }
 type User struct {
-	Username string
+	Username string `bson:"_id"`
 	Password string
 }

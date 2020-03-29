@@ -20,7 +20,7 @@ func authenticate(o *orb, password, username string) error {
 	user := &types.User{}
 	auth := map[string]string{"_id": username}
 	res := o.userCol.FindOne(context.TODO(), auth)
-	if res == nil {
+	if errors.Is(res.Err(), mongo.ErrNoDocuments) {
 		return errNotFound
 	}
 	if err := res.Decode(user); err != nil {
@@ -31,6 +31,7 @@ func authenticate(o *orb, password, username string) error {
 	}
 	o.username = user.Username
 	o.user = user
+	o.l.Printf("user %s authenticated", user.Username)
 	return nil
 }
 
@@ -51,13 +52,18 @@ func hashAndSalt(password string) (string, error) {
 
 func newUser(o *orb, password, username string) error {
 	user := &types.User{}
-	user.Password = password
+	hash, err := hashAndSalt(password)
+	if err != nil {
+		o.l.Fatalln(err.Error())
+	}
+	user.Password = hash
 	user.Username = username
 	exist := map[string]string{"_id": username}
 	if res := o.userCol.FindOne(context.TODO(), exist); errors.Is(res.Err(), mongo.ErrNoDocuments) {
 		if _, err := o.userCol.InsertOne(context.TODO(), user); err != nil {
 			return err
 		}
+		o.l.Printf("user %s created", user.Username)
 		return nil
 	}
 	return errUserExist

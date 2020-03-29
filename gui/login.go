@@ -28,7 +28,7 @@ func loginCanvas(o *orb) *widget.Box {
 	})
 	h := widget.NewHBox(loginInstead, submitBox)
 	return widget.NewVBox(
-		widget.NewLabel("Please register with a unique username"),
+		widget.NewLabel("login"),
 		usernameBox,
 		passwordBox,
 		h,
@@ -56,7 +56,7 @@ func registerCanvas(o *orb) fyne.CanvasObject {
 	})
 	h := widget.NewHBox(loginInstead, submitBox)
 	return widget.NewVBox(
-		widget.NewLabel("Please register with a unique username"),
+		widget.NewLabel("register"),
 		usernameBox,
 		passwordBox,
 		h,
