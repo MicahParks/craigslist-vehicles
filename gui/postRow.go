@@ -16,6 +16,7 @@ type postRow struct {
 	odoBox       *widget.Label
 	yearBox      *widget.Label
 	colorBox     *widget.Label
+	linkBox      *widget.Check
 	candidateBox *widget.Check
 	titleBox     *widget.Label
 	post         *types.Post
@@ -23,7 +24,7 @@ type postRow struct {
 
 func rowVBoxes() []*widget.Box {
 	return []*widget.Box{widget.NewVBox(), widget.NewVBox(), widget.NewVBox(), widget.NewVBox(), widget.NewVBox(),
-		widget.NewVBox(), widget.NewVBox()}
+		widget.NewVBox(), widget.NewVBox(), widget.NewVBox()}
 }
 
 func (p *postRow) append(boxes []*widget.Box) {
@@ -33,7 +34,8 @@ func (p *postRow) append(boxes []*widget.Box) {
 	boxes[3].Append(p.odoBox)
 	boxes[4].Append(p.yearBox)
 	boxes[5].Append(p.colorBox)
-	boxes[6].Append(p.candidateBox)
+	boxes[6].Append(p.linkBox)
+	boxes[7].Append(p.candidateBox)
 }
 
 func (p *postRow) attrBox() *widget.Form {
@@ -51,14 +53,43 @@ func (p *postRow) make() error {
 		return err
 	}
 	p.urlBox = widget.NewHyperlink("link", u)
-	p.priceBox = widget.NewLabel(fmt.Sprintf("$%d", p.post.Price))
+
+	priceStr := "?"
+	if p.post.Price > 0 {
+		priceStr = fmt.Sprintf("$%d", p.post.Price)
+	}
+	p.priceBox = widget.NewLabel(priceStr)
+
+	if len(p.post.Make) == 0 {
+		p.post.Make = "?"
+	}
 	p.makeBox = widget.NewLabel(p.post.Make)
-	p.odoBox = widget.NewLabel(fmt.Sprintf("%d", p.post.Odometer))
-	p.yearBox = widget.NewLabel(fmt.Sprintf("%d", p.post.Year))
+
+	odoStr := "?"
+	if p.post.Odometer > 0 {
+		odoStr = fmt.Sprintf("%d", p.post.Odometer)
+	}
+	p.odoBox = widget.NewLabel(odoStr)
+
+	yearStr := "?"
+	if p.post.Year > 0 {
+		yearStr = fmt.Sprintf("%d", p.post.Year)
+	}
+	p.yearBox = widget.NewLabel(yearStr)
+
+	if len(p.post.Color) == 0 {
+		p.post.Color = "?"
+	}
 	p.colorBox = widget.NewLabel(p.post.Color)
+
+	p.linkBox = widget.NewCheck("", func(_ bool) {})
+	p.linkBox.Checked = p.post.HasLink
+	p.linkBox.Disable()
+
 	p.candidateBox = widget.NewCheck("", func(_ bool) {})
 	p.candidateBox.Checked = p.post.IsCandidate
 	p.candidateBox.Disable()
+
 	p.titleBox = widget.NewLabel(p.post.Title)
 	return nil
 }

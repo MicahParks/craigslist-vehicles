@@ -30,13 +30,13 @@ type orb struct {
 
 func main() {
 	l := log.New(os.Stdout, "", log.LstdFlags|log.LUTC|log.Lshortfile)
-	canLogin := false
+	//canLogin := false
 	username := ""
 	if userB, err := ioutil.ReadFile(diskAsset); err != nil {
 		if !os.IsNotExist(err) {
 			l.Fatalln(err.Error())
 		}
-		canLogin = true
+		//canLogin = true
 	} else {
 		username = strings.TrimSpace(string(userB))
 	}
@@ -45,7 +45,7 @@ func main() {
 		l.Fatalln(err.Error())
 	}
 	postsCol, err := mongodb.Init("Posts")
-	orb := &orb{
+	o := &orb{
 		canChan:  make(chan fyne.CanvasObject),
 		death:    make(chan struct{}),
 		l:        l,
@@ -55,18 +55,19 @@ func main() {
 	}
 	a := app.New()
 	w := a.NewWindow("cars")
-	if canLogin {
-		w.SetContent(loginCan(orb))
-	} else {
-		w.SetContent(registerCan(orb))
-	}
+	w.SetContent(homeCan(o))
+	//if canLogin {
+	//	w.SetContent(loginCan(o))
+	//} else {
+	//	w.SetContent(registerCan(o))
+	//}
 	go func() {
 		for {
 			select {
-			case <-orb.death:
+			case <-o.death:
 				a.Quit()
 				return
-			case canv := <-orb.canChan:
+			case canv := <-o.canChan:
 				w.SetContent(canv)
 			}
 		}
