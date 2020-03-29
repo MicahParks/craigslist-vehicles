@@ -8,7 +8,7 @@ import (
 )
 
 func postCan(o *orb, end, start int) *widget.ScrollContainer {
-	query := bson.M{"price": bson.M{"$lte": 5000}}
+	query := bson.M{"price": bson.M{"$gte": 5000}}
 	posts, err := getPosts(o, query)
 	if err != nil {
 		o.l.Fatalln(err.Error())

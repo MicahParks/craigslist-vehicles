@@ -1,13 +1,15 @@
 package main
 
 import (
+	"strconv"
+
 	"fyne.io/fyne/widget"
 
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
 var (
-	dontCare = "don't care"
+	dontCare = ""
 )
 
 func presetCan(o *orb) *widget.Form {
@@ -63,12 +65,22 @@ func presetCan(o *orb) *widget.Form {
 	modelBox := widget.NewEntry()
 	modelBox.SetPlaceHolder("model or required string")
 	modelF := widget.NewFormItem("unique", modelBox)
+	yearBox := widget.NewEntry()
+	yearBox.SetPlaceHolder("must be made after this year")
+	yearF := widget.NewFormItem("made after", yearBox)
 	shareBox := widget.NewEntry()
 	shareBox.SetPlaceHolder("username, username2")
 	shareF := widget.NewFormItem("share", shareBox)
 	submit := widget.NewButton("create", func() {
+		year, err := strconv.Atoi(yearBox.Text)
+		if err != nil {
+			o.l.Println("couldn't convert year to integer")
+			return
+		}
+
+		query := p.Query()
 
 	})
 	submitF := widget.NewFormItem("create", submit)
-	return widget.NewForm(colorF, makeF, modelF, shareF, submitF)
+	return widget.NewForm(colorF, makeF, modelF, yearF, shareF, submitF)
 }
