@@ -66,5 +66,9 @@ func preset() *widget.Form {
 	shareBox := widget.NewEntry()
 	shareBox.SetPlaceHolder("username, username2")
 	shareF := widget.NewFormItem("Share", shareBox)
-	return widget.NewForm(colorF, makeF, modelF, shareF)
+	submit := widget.NewButton("Create", func() {
+
+	})
+	submitF := widget.NewFormItem("Create", submit)
+	return widget.NewForm(colorF, makeF, modelF, shareF, submitF)
 }
