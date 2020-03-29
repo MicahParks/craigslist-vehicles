@@ -53,7 +53,7 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("cars")
 	if canLogin {
-		w.SetContent(loginCanvas(orb))
+		w.SetContent(loginCan(orb))
 	} else {
 		w.SetContent(registerCanvas(orb))
 	}

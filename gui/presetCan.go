@@ -10,7 +10,7 @@ var (
 	dontCare = "don't care"
 )
 
-func presetCanvas(o *orb) *widget.Form {
+func presetCan(o *orb) *widget.Form {
 	p := &types.Preset{}
 	makeOpts := []string{
 		dontCare,

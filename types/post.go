@@ -122,6 +122,9 @@ func (p *Post) GetHasLink(titleBody string) {
 func (p *Post) GetYear(titleBody string) {
 	re := regexp.MustCompile(`\b(((19)|(20))[0-9]{2})|(['"][0-9]{2})\b`)
 	yearStr := re.FindString(titleBody)
+	if strings.HasPrefix(yearStr, "'") || strings.HasPrefix(yearStr, `""`) {
+		yearStr = "19" + yearStr[1:]
+	}
 	yearInt, err := strconv.Atoi(yearStr)
 	if err != nil {
 		return

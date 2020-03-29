@@ -38,7 +38,7 @@ func main() {
 	mux := &sync.Mutex{}
 	page := 0
 	wg := &sync.WaitGroup{}
-	if err = c.Limit(&colly.LimitRule{Delay: 0, DomainGlob: "*", Parallelism: 55}); err != nil {
+	if err = c.Limit(&colly.LimitRule{Delay: 0, DomainGlob: "*", Parallelism: 100}); err != nil {
 		l.Fatalln(err.Error())
 	}
 	c.OnHTML("a.result-title.hdrlnk", func(e *colly.HTMLElement) {

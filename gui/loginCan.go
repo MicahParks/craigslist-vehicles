@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/widget"
 )
 
-func loginCanvas(o *orb) *widget.Box {
+func loginCan(o *orb) *widget.Box {
 	passwordBox := widget.NewPasswordEntry()
 	passwordBox.SetPlaceHolder("password")
 	usernameBox := widget.NewEntry()
@@ -25,7 +25,7 @@ func loginCanvas(o *orb) *widget.Box {
 			}
 			o.l.Fatalln(err.Error())
 		}
-		o.canChan <- homeCanvas(o)
+		o.canChan <- homeCan(o)
 	})
 	h := widget.NewHBox(loginInstead, submitBox)
 	return widget.NewVBox(
@@ -42,7 +42,7 @@ func registerCanvas(o *orb) fyne.CanvasObject {
 	usernameBox := widget.NewEntry()
 	usernameBox.SetPlaceHolder("username")
 	loginInstead := widget.NewButton("Already have a login?", func() {
-		o.canChan <- loginCanvas(o)
+		o.canChan <- loginCan(o)
 	})
 	submitBox := widget.NewButton("submit", func() {
 		err := newUser(o, passwordBox.Text, usernameBox.Text)
@@ -54,7 +54,7 @@ func registerCanvas(o *orb) fyne.CanvasObject {
 			}
 			o.l.Fatalln(err.Error())
 		}
-		o.canChan <- homeCanvas(o)
+		o.canChan <- homeCan(o)
 	})
 	h := widget.NewHBox(loginInstead, submitBox)
 	return widget.NewVBox(
