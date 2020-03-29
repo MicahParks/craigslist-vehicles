@@ -1,9 +1,7 @@
 package types
 
-type Color string
-
 type List struct {
-	Id    string
+	Id    string `bson:"_id"`
 	Owner string
 	Subs  []string
 }
@@ -32,7 +30,7 @@ type Post struct {
 }
 
 type Preset struct {
-	Id      string
+	Id      string `bson:"_id"`
 	Color   string
 	Default bool
 	Make    string
@@ -44,7 +42,7 @@ type Preset struct {
 
 type Query struct {
 	Default bool
-	Url     string
+	Url     string `bson:"_id"`
 }
 type User struct {
 	Username string `bson:"_id"`
