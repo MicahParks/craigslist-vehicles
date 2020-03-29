@@ -29,10 +29,15 @@ func main() {
 		colly.AllowedDomains(domain),
 		colly.IgnoreRobotsTxt(),
 		colly.DetectCharset(),
+		colly.Async(true),
 	)
 	postUrl := make(map[string]*Post)
 	mux := &sync.Mutex{}
 	page := 0
+	wg := &sync.WaitGroup{}
+	if err = c.Limit(&colly.LimitRule{Delay: 0, DomainGlob: "*", Parallelism: 55}); err != nil {
+		l.Fatalln(err.Error())
+	}
 	c.OnHTML("a.result-title.hdrlnk", func(e *colly.HTMLElement) {
 		// Post tiles from query.
 		// Grab the post's link.
@@ -44,7 +49,9 @@ func main() {
 		if visited {
 			return
 		}
+		wg.Add(1)
 		go func() {
+			wg.Done()
 			if err := e.Request.Visit(url); err != nil {
 				l.Fatalf("error with URL: (%s) \"%s\"", url, err.Error())
 			}
@@ -63,12 +70,16 @@ func main() {
 		if visited {
 			return
 		}
-		if err := e.Request.Visit(url); err != nil {
-			if err.Error() == "URL already visited" {
-				return
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if err := e.Request.Visit(url); err != nil {
+				if err.Error() == "URL already visited" {
+					return
+				}
+				l.Fatalf("error getting next page: \"%s\"", err.Error())
 			}
-			l.Fatalf("error getting next page: \"%s\"", err.Error())
-		}
+		}()
 	})
 	c.OnHTML("section.body", func(e *colly.HTMLElement) {
 		// Post page.
@@ -88,25 +99,30 @@ func main() {
 		if err := e.Unmarshal(m); err != nil {
 			l.Fatalln(err.Error())
 		}
-		price, err := strconv.Atoi(strings.TrimPrefix(m.PriceStr, "$"))
-		if err == nil {
-			post.Price = price
-		}
-		post.Text = m.Text
-		post.Title = m.Title
-		post.titleBody = strings.ToLower(post.Title + "\n" + post.Text)
-		post.attr(e, l)
-		post.capPercent()
-		post.color()
-		post.getMake()
-		post.hasLink()
-		post.year()
-		post.Url = url
-		post.Query = append(post.Query, subdomain)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			price, err := strconv.Atoi(strings.TrimPrefix(m.PriceStr, "$"))
+			if err == nil {
+				post.Price = price
+			}
+			post.Text = m.Text
+			post.Title = m.Title
+			post.titleBody = strings.ToLower(post.Title + "\n" + post.Text)
+			post.attr(e, l)
+			post.capPercent()
+			post.color()
+			post.getMake()
+			post.hasLink()
+			post.year()
+			post.Url = url
+			post.Query = append(post.Query, subdomain)
+		}()
 	})
 	if err := c.Visit(start); err != nil {
 		l.Fatalln(err.Error())
 	}
+	wg.Wait()
 	c.Wait()
 	posts := make([]*Post, 0, len(postUrl))
 	for _, v := range postUrl {
