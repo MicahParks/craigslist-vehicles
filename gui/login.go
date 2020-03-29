@@ -13,7 +13,7 @@ func loginCanvas(o *orb) *widget.Box {
 	usernameBox := widget.NewEntry()
 	usernameBox.SetPlaceHolder("username")
 	loginInstead := widget.NewButton("Don't have a login?", func() {
-		o.canvasC <- registerCanvas(o)
+		o.canChan <- registerCanvas(o)
 	})
 	submitBox := widget.NewButton("submit", func() {
 		err := authenticate(o, passwordBox.Text, usernameBox.Text)
@@ -25,6 +25,7 @@ func loginCanvas(o *orb) *widget.Box {
 			}
 			o.l.Fatalln(err.Error())
 		}
+		o.canChan <- homeCanvas(o)
 	})
 	h := widget.NewHBox(loginInstead, submitBox)
 	return widget.NewVBox(
@@ -41,7 +42,7 @@ func registerCanvas(o *orb) fyne.CanvasObject {
 	usernameBox := widget.NewEntry()
 	usernameBox.SetPlaceHolder("username")
 	loginInstead := widget.NewButton("Already have a login?", func() {
-		o.canvasC <- loginCanvas(o)
+		o.canChan <- loginCanvas(o)
 	})
 	submitBox := widget.NewButton("submit", func() {
 		err := newUser(o, passwordBox.Text, usernameBox.Text)
@@ -53,6 +54,7 @@ func registerCanvas(o *orb) fyne.CanvasObject {
 			}
 			o.l.Fatalln(err.Error())
 		}
+		o.canChan <- homeCanvas(o)
 	})
 	h := widget.NewHBox(loginInstead, submitBox)
 	return widget.NewVBox(

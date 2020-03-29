@@ -19,7 +19,7 @@ const (
 )
 
 type orb struct {
-	canvasC  chan fyne.CanvasObject
+	canChan  chan fyne.CanvasObject
 	death    chan struct{}
 	l        *log.Logger
 	user     *types.User
@@ -44,7 +44,7 @@ func main() {
 		l.Fatalln(err.Error())
 	}
 	orb := &orb{
-		canvasC:  make(chan fyne.CanvasObject),
+		canChan:  make(chan fyne.CanvasObject),
 		death:    make(chan struct{}),
 		l:        l,
 		userCol:  userCol,
@@ -63,7 +63,7 @@ func main() {
 			case <-orb.death:
 				a.Quit()
 				return
-			case canv := <-orb.canvasC:
+			case canv := <-orb.canChan:
 				w.SetContent(canv)
 			}
 		}
