@@ -53,6 +53,9 @@ func main() {
 		go func() {
 			wg.Done()
 			if err := e.Request.Visit(url); err != nil {
+				if err.Error() == "URL already visited" {
+					return
+				}
 				l.Fatalf("error with URL: (%s) \"%s\"", url, err.Error())
 			}
 		}()
