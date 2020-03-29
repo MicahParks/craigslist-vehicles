@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/url"
 
 	"fyne.io/fyne/widget"
@@ -22,7 +23,7 @@ type postRow struct {
 
 func rowVBoxes() []*widget.Box {
 	return []*widget.Box{widget.NewVBox(), widget.NewVBox(), widget.NewVBox(), widget.NewVBox(), widget.NewVBox(),
-		widget.NewVBox(), widget.NewVBox(), widget.NewVBox()}
+		widget.NewVBox(), widget.NewVBox()}
 }
 
 func (p *postRow) append(boxes []*widget.Box) {
@@ -33,7 +34,6 @@ func (p *postRow) append(boxes []*widget.Box) {
 	boxes[4].Append(p.yearBox)
 	boxes[5].Append(p.colorBox)
 	boxes[6].Append(p.candidateBox)
-	boxes[7].Append(p.titleBox)
 }
 
 func (p *postRow) attrBox() *widget.Form {
@@ -51,10 +51,10 @@ func (p *postRow) make() error {
 		return err
 	}
 	p.urlBox = widget.NewHyperlink("link", u)
-	p.priceBox = widget.NewLabel("$" + string(p.post.Price))
+	p.priceBox = widget.NewLabel(fmt.Sprintf("$%d", p.post.Price))
 	p.makeBox = widget.NewLabel(p.post.Make)
-	p.odoBox = widget.NewLabel(string(p.post.Odometer))
-	p.yearBox = widget.NewLabel(string(p.post.Year))
+	p.odoBox = widget.NewLabel(fmt.Sprintf("%d", p.post.Odometer))
+	p.yearBox = widget.NewLabel(fmt.Sprintf("%d", p.post.Year))
 	p.colorBox = widget.NewLabel(p.post.Color)
 	p.candidateBox = widget.NewCheck("", func(_ bool) {})
 	p.candidateBox.Checked = p.post.IsCandidate

@@ -22,6 +22,7 @@ type orb struct {
 	canChan  chan fyne.CanvasObject
 	death    chan struct{}
 	l        *log.Logger
+	postsCol *mongo.Collection
 	user     *types.User
 	userCol  *mongo.Collection
 	username string
@@ -43,10 +44,12 @@ func main() {
 	if err != nil {
 		l.Fatalln(err.Error())
 	}
+	postsCol, err := mongodb.Init("Posts")
 	orb := &orb{
 		canChan:  make(chan fyne.CanvasObject),
 		death:    make(chan struct{}),
 		l:        l,
+		postsCol: postsCol,
 		userCol:  userCol,
 		username: username,
 	}

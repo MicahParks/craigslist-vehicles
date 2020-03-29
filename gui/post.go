@@ -11,7 +11,7 @@ import (
 
 func getPosts(o *orb, query bson.M, opts ...*options.FindOptions) (posts []*types.Post, err error) {
 	posts = make([]*types.Post, 0)
-	cursor, err := o.userCol.Find(context.TODO(), query, opts...)
+	cursor, err := o.postsCol.Find(context.TODO(), query, opts...)
 	if err != nil {
 		return nil, err
 	}
