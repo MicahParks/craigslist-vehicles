@@ -1,4 +1,4 @@
-package mongo
+package mongodb
 
 import (
 	"context"
@@ -8,6 +8,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"gitlab.com/MicahParks/cano-cars/types"
+)
+
+const (
+	uri = "mongodb://0.0.0.0:27777/admin"
 )
 
 func InsertPosts(collection *mongo.Collection, posts []*types.Post) error {
@@ -23,8 +27,8 @@ func InsertPosts(collection *mongo.Collection, posts []*types.Post) error {
 	return nil
 }
 
-func Init() (*mongo.Collection, error) {
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://0.0.0.0:27777/admin"))
+func Init(collection string) (*mongo.Collection, error) {
+	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
 	if err != nil {
 		return nil, err
 	}
@@ -34,5 +38,5 @@ func Init() (*mongo.Collection, error) {
 	if err != nil {
 		return nil, err
 	}
-	return client.Database("cano").Collection("Posts"), nil
+	return client.Database("cars").Collection(collection), nil
 }

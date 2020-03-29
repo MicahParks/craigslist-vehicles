@@ -11,7 +11,7 @@ import (
 
 	"github.com/gocolly/colly/v2"
 
-	"gitlab.com/MicahParks/cano-cars/mongo"
+	"gitlab.com/MicahParks/cano-cars/mongodb"
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
@@ -19,7 +19,7 @@ import (
 
 func main() {
 	l := log.New(os.Stdout, "cano cars scraper: ", log.LstdFlags|log.LUTC|log.Lshortfile)
-	collection, err := mongo.Init()
+	collection, err := mongodb.Init("Posts")
 	if err != nil {
 		l.Fatalln(err.Error())
 	}
@@ -145,7 +145,7 @@ func main() {
 	if err = f.Close(); err != nil {
 		l.Fatalln(err.Error())
 	}
-	if err := mongo.InsertPosts(collection, posts); err != nil {
+	if err := mongodb.InsertPosts(collection, posts); err != nil {
 		l.Fatalln(err.Error())
 	}
 }
