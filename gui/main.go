@@ -11,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"gitlab.com/MicahParks/cano-cars/mongodb"
+	"gitlab.com/MicahParks/cano-cars/types"
 )
 
 const (
@@ -18,10 +19,12 @@ const (
 )
 
 type orb struct {
-	canvasC chan fyne.CanvasObject
-	death   chan struct{}
-	l       *log.Logger
-	userCol *mongo.Collection
+	canvasC  chan fyne.CanvasObject
+	death    chan struct{}
+	l        *log.Logger
+	user     *types.User
+	userCol  *mongo.Collection
+	username string
 }
 
 func main() {
@@ -41,10 +44,11 @@ func main() {
 		l.Fatalln(err.Error())
 	}
 	orb := &orb{
-		canvasC: make(chan fyne.CanvasObject),
-		death:   make(chan struct{}),
-		l:       l,
-		userCol: userCol,
+		canvasC:  make(chan fyne.CanvasObject),
+		death:    make(chan struct{}),
+		l:        l,
+		userCol:  userCol,
+		username: username,
 	}
 	a := app.New()
 	w := a.NewWindow("cars")

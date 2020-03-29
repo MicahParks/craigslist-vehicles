@@ -20,8 +20,7 @@ func InsertPosts(collection *mongo.Collection, posts []*types.Post) error {
 	for _, v := range posts {
 		many = append(many, v)
 	}
-	_, err := collection.InsertMany(context.TODO(), many, opts)
-	if err != nil {
+	if _, err := collection.InsertMany(context.TODO(), many, opts); err != nil {
 		return err
 	}
 	return nil

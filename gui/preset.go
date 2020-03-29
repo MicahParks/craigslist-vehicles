@@ -54,21 +54,21 @@ func presetCanvas(o *orb) *widget.Form {
 		p.Color = color
 	})
 	colorBox.SetSelected(dontCare)
-	colorF := widget.NewFormItem("Color", colorBox)
+	colorF := widget.NewFormItem("color", colorBox)
 	makeBox := widget.NewSelect(makeOpts, func(make string) {
 		p.Make = make
 	})
 	makeBox.SetSelected(dontCare)
-	makeF := widget.NewFormItem("Make", makeBox)
+	makeF := widget.NewFormItem("make", makeBox)
 	modelBox := widget.NewEntry()
 	modelBox.SetPlaceHolder("model or required string")
-	modelF := widget.NewFormItem("Unique", modelBox)
+	modelF := widget.NewFormItem("unique", modelBox)
 	shareBox := widget.NewEntry()
 	shareBox.SetPlaceHolder("username, username2")
-	shareF := widget.NewFormItem("Share", shareBox)
-	submit := widget.NewButton("Create", func() {
+	shareF := widget.NewFormItem("share", shareBox)
+	submit := widget.NewButton("create", func() {
 
 	})
-	submitF := widget.NewFormItem("Create", submit)
+	submitF := widget.NewFormItem("create", submit)
 	return widget.NewForm(colorF, makeF, modelF, shareF, submitF)
 }
