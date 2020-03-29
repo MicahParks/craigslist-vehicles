@@ -14,8 +14,8 @@ func homeCan(o *orb) *widget.Box {
 		// TODO Other logout stuff?
 		o.canChan <- loginCan(o)
 	})
-	tempBox := widget.NewButton("temp", func() {
-		o.canChan <- postCan(o, 50, 0)
-	})
-	return widget.NewVBox(presetBox, loginBox, tempBox)
+	//tempBox := widget.NewButton("temp", func() {
+	//	o.canChan <- postCan(o, 0, 50)
+	//})
+	return widget.NewVBox(presetBox, loginBox)
 }

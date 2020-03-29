@@ -4,15 +4,11 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
-	"go.mongodb.org/mongo-driver/bson"
+
+	"gitlab.com/MicahParks/cano-cars/types"
 )
 
-func postCan(o *orb, end, start int) *widget.ScrollContainer {
-	query := bson.M{"price": bson.M{"$gte": 5000}}
-	posts, err := getPosts(o, query)
-	if err != nil {
-		o.l.Fatalln(err.Error())
-	}
+func postCan(o *orb, posts []*types.Post, start, end int) *widget.ScrollContainer {
 	boxes := rowVBoxes()
 	for i, post := range posts {
 		if i >= start {

@@ -34,7 +34,6 @@ type Preset struct {
 	Color   string
 	Default bool
 	Make    string
-	Model   string
 	Owner   string
 	Subs    []string
 	Year    int

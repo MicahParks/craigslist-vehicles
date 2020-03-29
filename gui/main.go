@@ -19,13 +19,14 @@ const (
 )
 
 type orb struct {
-	canChan  chan fyne.CanvasObject
-	death    chan struct{}
-	l        *log.Logger
-	postsCol *mongo.Collection
-	user     *types.User
-	userCol  *mongo.Collection
-	username string
+	canChan   chan fyne.CanvasObject
+	death     chan struct{}
+	l         *log.Logger
+	postsCol  *mongo.Collection
+	presetCol *mongo.Collection
+	user      *types.User
+	userCol   *mongo.Collection
+	username  string
 }
 
 func main() {
@@ -45,13 +46,21 @@ func main() {
 		l.Fatalln(err.Error())
 	}
 	postsCol, err := mongodb.Init("Posts")
+	if err != nil {
+		l.Fatalln(err.Error())
+	}
+	presetCol, err := mongodb.Init("Preset")
+	if err != nil {
+		l.Fatalln(err.Error())
+	}
 	o := &orb{
-		canChan:  make(chan fyne.CanvasObject),
-		death:    make(chan struct{}),
-		l:        l,
-		postsCol: postsCol,
-		userCol:  userCol,
-		username: username,
+		canChan:   make(chan fyne.CanvasObject),
+		death:     make(chan struct{}),
+		l:         l,
+		postsCol:  postsCol,
+		presetCol: presetCol,
+		userCol:   userCol,
+		username:  username,
 	}
 	a := app.New()
 	w := a.NewWindow("cars")

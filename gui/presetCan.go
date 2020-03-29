@@ -2,6 +2,7 @@ package main
 
 import (
 	"strconv"
+	"strings"
 
 	"fyne.io/fyne/widget"
 
@@ -72,14 +73,30 @@ func presetCan(o *orb) *widget.Form {
 	shareBox.SetPlaceHolder("username, username2")
 	shareF := widget.NewFormItem("share", shareBox)
 	submit := widget.NewButton("create", func() {
-		year, err := strconv.Atoi(yearBox.Text)
+		p.Color = colorBox.Selected
+		p.Make = makeBox.Selected
+		subs := strings.Split(shareBox.Text, ",")
+		for _, sub := range subs {
+			p.Subs = append(p.Subs, strings.TrimSpace(sub))
+		}
+		yearStr := strings.TrimSpace(yearBox.Text)
+		if len(yearStr) == 0 {
+			yearStr = "0"
+		}
+		year, err := strconv.Atoi(yearStr)
 		if err != nil {
 			o.l.Println("couldn't convert year to integer")
 			return
 		}
-
-		query := p.Query()
-
+		p.Year = year
+		if err := insertPreset(o, p); err != nil {
+			o.l.Fatalln(err.Error())
+		}
+		posts, err := getPosts(o, p.Query())
+		if err != nil {
+			o.l.Fatalln(err.Error())
+		}
+		o.canChan <- postCan(o, posts, 0, 50)
 	})
 	submitF := widget.NewFormItem("create", submit)
 	return widget.NewForm(colorF, makeF, modelF, yearF, shareF, submitF)
