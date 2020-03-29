@@ -7,6 +7,6 @@ import (
 func main() {
 	a := app.New()
 	w := a.NewWindow("test")
-	w.SetContent(register())
+	w.SetContent(preset())
 	w.ShowAndRun()
 }

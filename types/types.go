@@ -33,7 +33,7 @@ type Post struct {
 
 type Preset struct {
 	Id      string
-	Color   Color
+	Color   string
 	Default bool
 	Make    string
 	Model   string
