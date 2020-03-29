@@ -13,7 +13,7 @@ func loginCan(o *orb) *widget.Box {
 	usernameBox := widget.NewEntry()
 	usernameBox.SetPlaceHolder("username")
 	loginInstead := widget.NewButton("Don't have a login?", func() {
-		o.canChan <- registerCanvas(o)
+		o.canChan <- registerCan(o)
 	})
 	submitBox := widget.NewButton("submit", func() {
 		err := authenticate(o, passwordBox.Text, usernameBox.Text)
@@ -36,7 +36,7 @@ func loginCan(o *orb) *widget.Box {
 	)
 }
 
-func registerCanvas(o *orb) fyne.CanvasObject {
+func registerCan(o *orb) fyne.CanvasObject {
 	passwordBox := widget.NewPasswordEntry()
 	passwordBox.SetPlaceHolder("password")
 	usernameBox := widget.NewEntry()

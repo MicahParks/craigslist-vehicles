@@ -20,6 +20,22 @@ type postRow struct {
 	post         *types.Post
 }
 
+func rowVBoxes() []*widget.Box {
+	return []*widget.Box{widget.NewVBox(), widget.NewVBox(), widget.NewVBox(), widget.NewVBox(), widget.NewVBox(),
+		widget.NewVBox(), widget.NewVBox(), widget.NewVBox()}
+}
+
+func (p *postRow) append(boxes []*widget.Box) {
+	boxes[0].Append(p.urlBox)
+	boxes[1].Append(p.priceBox)
+	boxes[2].Append(p.makeBox)
+	boxes[3].Append(p.odoBox)
+	boxes[4].Append(p.yearBox)
+	boxes[5].Append(p.colorBox)
+	boxes[6].Append(p.candidateBox)
+	boxes[7].Append(p.titleBox)
+}
+
 func (p *postRow) attrBox() *widget.Form {
 	form := widget.NewForm()
 	for k, v := range p.post.AttrGroup {
@@ -45,10 +61,4 @@ func (p *postRow) make() error {
 	p.candidateBox.Disable()
 	p.titleBox = widget.NewLabel(p.post.Title)
 	return nil
-}
-
-func (p *postRow) expand() (
-	urlBox *widget.Hyperlink, priceBox *widget.Label, makeBox *widget.Label, odoBox *widget.Label,
-	yearBox *widget.Label, colorBox *widget.Label, candidateBox *widget.Check, titleBox *widget.Label) {
-	return p.urlBox, p.priceBox, p.makeBox, p.odoBox, p.yearBox, p.colorBox, p.candidateBox, p.titleBox
 }

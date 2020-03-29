@@ -55,7 +55,7 @@ func main() {
 	if canLogin {
 		w.SetContent(loginCan(orb))
 	} else {
-		w.SetContent(registerCanvas(orb))
+		w.SetContent(registerCan(orb))
 	}
 	go func() {
 		for {
