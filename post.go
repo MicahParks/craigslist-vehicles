@@ -33,8 +33,8 @@ func (p *Post) attr(e *colly.HTMLElement, l *log.Logger) {
 }
 
 func (p *Post) capPercent() {
-	count := 0
-	total := 0
+	count := float64(0)
+	total := float64(0)
 	for _, v := range p.Title {
 		if unicode.IsLetter(v) {
 			total += 1
@@ -44,7 +44,7 @@ func (p *Post) capPercent() {
 		}
 	}
 	if count > 0 {
-		p.CapPercent = count / total * 100
+		p.CapPercent = int(count / total * 100)
 	}
 }
 
