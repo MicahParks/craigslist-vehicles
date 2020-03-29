@@ -10,13 +10,16 @@ import (
 	"sync"
 
 	"github.com/gocolly/colly/v2"
+
+	"gitlab.com/MicahParks/cano-cars/mongo"
+	"gitlab.com/MicahParks/cano-cars/types"
 )
 
 // TODO Too many models. Make it a client side thing.
 
 func main() {
 	l := log.New(os.Stdout, "cano cars scraper: ", log.LstdFlags|log.LUTC|log.Lshortfile)
-	collection, err := mongoInit()
+	collection, err := mongo.Init()
 	if err != nil {
 		l.Fatalln(err.Error())
 	}
@@ -31,7 +34,7 @@ func main() {
 		colly.DetectCharset(),
 		colly.Async(true),
 	)
-	postUrl := make(map[string]*Post)
+	postUrl := make(map[string]*types.Post)
 	mux := &sync.Mutex{}
 	page := 0
 	wg := &sync.WaitGroup{}
@@ -87,18 +90,18 @@ func main() {
 	c.OnHTML("section.body", func(e *colly.HTMLElement) {
 		// Post page.
 		url := e.Request.URL.String()
-		var post *Post
+		var post *types.Post
 		mux.Lock()
 		post, ok := postUrl[url]
 		if !ok {
-			post = &Post{
+			post = &types.Post{
 				AttrGroup: make(map[string]string),
 				Query:     make([]string, 0, 1),
 			}
 			postUrl[url] = post
 		}
 		mux.Unlock()
-		m := &marsh{}
+		m := &types.Marsh{}
 		if err := e.Unmarshal(m); err != nil {
 			l.Fatalln(err.Error())
 		}
@@ -111,13 +114,13 @@ func main() {
 			}
 			post.Text = m.Text
 			post.Title = m.Title
-			post.titleBody = strings.ToLower(post.Title + "\n" + post.Text)
-			post.attr(e, l)
-			post.capPercent()
-			post.color()
-			post.getMake()
-			post.hasLink()
-			post.year()
+			titleBody := strings.ToLower(post.Title + "\n" + post.Text)
+			post.GetAttr(e, l)
+			post.GetCapPercent()
+			post.GetColor(titleBody)
+			post.GetMake(titleBody)
+			post.GetHasLink(titleBody)
+			post.GetYear(titleBody)
 			post.Url = url
 			post.Query = append(post.Query, subdomain)
 		}()
@@ -127,7 +130,7 @@ func main() {
 	}
 	wg.Wait()
 	c.Wait()
-	posts := make([]*Post, 0, len(postUrl))
+	posts := make([]*types.Post, 0, len(postUrl))
 	for _, v := range postUrl {
 		posts = append(posts, v)
 	}
@@ -142,7 +145,7 @@ func main() {
 	if err = f.Close(); err != nil {
 		l.Fatalln(err.Error())
 	}
-	if err := insertPosts(collection, posts); err != nil {
+	if err := mongo.InsertPosts(collection, posts); err != nil {
 		l.Fatalln(err.Error())
 	}
 }

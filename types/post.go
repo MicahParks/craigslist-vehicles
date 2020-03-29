@@ -1,4 +1,4 @@
-package main
+package types
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
-func (p *Post) attr(e *colly.HTMLElement, l *log.Logger) {
+func (p *Post) GetAttr(e *colly.HTMLElement, l *log.Logger) {
 	e.ForEach("p.attrgroup", func(_ int, el *colly.HTMLElement) {
 		el.ForEach("span", func(_ int, elem *colly.HTMLElement) {
 			text := strings.TrimSpace(elem.Text)
@@ -32,7 +32,7 @@ func (p *Post) attr(e *colly.HTMLElement, l *log.Logger) {
 	})
 }
 
-func (p *Post) capPercent() {
+func (p *Post) GetCapPercent() {
 	count := float64(0)
 	total := float64(0)
 	for _, v := range p.Title {
@@ -48,7 +48,7 @@ func (p *Post) capPercent() {
 	}
 }
 
-func (p *Post) color() {
+func (p *Post) GetColor(titleBody string) {
 	colors := map[string]string{
 		"yellow": "yellow",
 		"red":    "red",
@@ -66,14 +66,14 @@ func (p *Post) color() {
 	}
 	for k, v := range colors {
 		re := regexp.MustCompile(fmt.Sprintf(`\b%s\b`, k))
-		if found := re.FindString(p.titleBody); len(found) != 0 {
+		if found := re.FindString(titleBody); len(found) != 0 {
 			p.Color = v
 			break
 		}
 	}
 }
 
-func (p *Post) getMake() {
+func (p *Post) GetMake(titleBody string) {
 	makers := map[string]string{
 		"bmw":        "bmw",
 		"mercedes":   "mercedes",
@@ -104,24 +104,24 @@ func (p *Post) getMake() {
 	}
 	for k, v := range makers {
 		re := regexp.MustCompile(fmt.Sprintf(`\b%s\b`, k))
-		if found := re.FindString(p.titleBody); len(found) != 0 {
+		if found := re.FindString(titleBody); len(found) != 0 {
 			p.Make = v
 			break
 		}
 	}
 }
 
-func (p *Post) hasLink() {
-	if strings.Contains(p.titleBody, ".com") ||
-		strings.Contains(p.titleBody, "http") ||
-		strings.Contains(p.titleBody, "www") {
+func (p *Post) GetHasLink(titleBody string) {
+	if strings.Contains(titleBody, ".com") ||
+		strings.Contains(titleBody, "http") ||
+		strings.Contains(titleBody, "www") {
 		p.HasLink = true
 	}
 }
 
-func (p *Post) year() {
+func (p *Post) GetYear(titleBody string) {
 	re := regexp.MustCompile(`\b(((19)|(20))[0-9]{2})|(['"][0-9]{2})\b`)
-	yearStr := re.FindString(p.titleBody)
+	yearStr := re.FindString(titleBody)
 	yearInt, err := strconv.Atoi(yearStr)
 	if err != nil {
 		return

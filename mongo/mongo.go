@@ -1,4 +1,4 @@
-package main
+package mongo
 
 import (
 	"context"
@@ -6,9 +6,11 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"gitlab.com/MicahParks/cano-cars/types"
 )
 
-func insertPosts(collection *mongo.Collection, posts []*Post) error {
+func InsertPosts(collection *mongo.Collection, posts []*types.Post) error {
 	opts := options.InsertMany().SetOrdered(false)
 	var many []interface{}
 	for _, v := range posts {
@@ -21,7 +23,7 @@ func insertPosts(collection *mongo.Collection, posts []*Post) error {
 	return nil
 }
 
-func mongoInit() (*mongo.Collection, error) {
+func Init() (*mongo.Collection, error) {
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://0.0.0.0:27777/admin"))
 	if err != nil {
 		return nil, err

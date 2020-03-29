@@ -1,4 +1,4 @@
-package main
+package types
 
 type Color string
 
@@ -8,7 +8,7 @@ type List struct {
 	Subs  []string
 }
 
-type marsh struct {
+type Marsh struct {
 	PriceStr string `selector:".price"`
 	Text     string `selector:"#postingbody"`
 	Title    string `selector:"#titletextonly"`
@@ -40,10 +40,6 @@ type Preset struct {
 	Owner   string
 	Subs    []string
 	Year    int
-}
-
-type Tile struct {
-	Link string `selector:"li.result-row:nth-child(1) > p:nth-child(2) > a:nth-child(3)"`
 }
 
 type Query struct {
