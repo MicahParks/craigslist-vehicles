@@ -92,5 +92,8 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		pCon.AddObject(widget.NewLabel(shares))
 		pCon.AddObject(widget.NewLabel(subdomains))
 	}
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, nil, nil, nil), header, pCon)
+	back := widget.NewButton("back", func() {
+		o.canChan <- homeCan(o)
+	})
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, back, nil, nil), header, back, pCon)
 }

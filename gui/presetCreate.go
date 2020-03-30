@@ -3,6 +3,8 @@ package main
 import (
 	"strings"
 
+	"fyne.io/fyne"
+	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
 
 	"gitlab.com/MicahParks/cano-cars/types"
@@ -12,7 +14,7 @@ var (
 	dontCare = ""
 )
 
-func presetCreationCan(o *orb) *widget.Form {
+func presetCreationCan(o *orb) *fyne.Container {
 	p := &types.Preset{}
 	colorOpts := []string{
 		dontCare,
@@ -126,6 +128,10 @@ func presetCreationCan(o *orb) *widget.Form {
 		o.canChan <- postCan(o, posts, 0, 50)
 	})
 	submitF := widget.NewFormItem("create", submit)
-	return widget.NewForm(candidateF, capPercentF, colorF, discardF, linkF, makeF, odoF, priceF, requiredF, subF,
+	form := widget.NewForm(candidateF, capPercentF, colorF, discardF, linkF, makeF, odoF, priceF, requiredF, subF,
 		subdomainF, yearF, submitF)
+	back := widget.NewButton("back", func() {
+		o.canChan <- homeCan(o)
+	})
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, back, nil, nil), back, form)
 }
