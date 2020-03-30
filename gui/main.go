@@ -31,13 +31,13 @@ type orb struct {
 
 func main() {
 	l := log.New(os.Stdout, "", log.LstdFlags|log.LUTC|log.Lshortfile)
-	//canLogin := false
+	canLogin := true
 	username := ""
 	if userB, err := ioutil.ReadFile(diskAsset); err != nil {
 		if !os.IsNotExist(err) {
 			l.Fatalln(err.Error())
 		}
-		//canLogin = true
+		canLogin = false
 	} else {
 		username = strings.TrimSpace(string(userB))
 	}
@@ -64,12 +64,12 @@ func main() {
 	}
 	a := app.New()
 	w := a.NewWindow("cars")
-	w.SetContent(homeCan(o))
-	//if canLogin {
-	//	w.SetContent(loginCan(o))
-	//} else {
-	//	w.SetContent(registerCan(o))
-	//}
+	//w.SetContent(homeCan(o))
+	if canLogin {
+		w.SetContent(loginCan(o))
+	} else {
+		w.SetContent(registerCan(o))
+	}
 	go func() {
 		for {
 			select {

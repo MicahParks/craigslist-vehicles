@@ -1,11 +1,16 @@
 package main
 
 import (
+	"strings"
+
 	"fyne.io/fyne/widget"
 )
 
 func homeCan(o *orb) *widget.Form {
 	o.username = "test" // TODO Delete this.
+	if err := getUser(o); err != nil {
+		o.l.Fatalln(err.Error())
+	}
 	presetBox := widget.NewButton("view", func() {
 		o.canChan <- presetCan(o)
 	})
@@ -13,14 +18,36 @@ func homeCan(o *orb) *widget.Form {
 		o.canChan <- presetCreationCan(o)
 	})
 	hPreset := widget.NewHBox(presetBox, createPresetBox)
+	suffix := ", "
+	domains := ""
+	for _, d := range o.user.Domains {
+		domains += d + suffix
+	}
+	domains = strings.TrimSuffix(domains, suffix)
+	domainBox := widget.NewEntry()
+	domainBox.SetText(domains)
+	updateDomains := widget.NewButton("update", func() {
+		domains := make([]string, 0)
+		for _, d := range strings.Split(domainBox.Text, suffix) {
+			d = strings.TrimSpace(d)
+			if len(d) != 0 {
+				domains = append(domains, d)
+			}
+			if len(domains) != 0 {
+				o.user.Domains = domains
+				if err := updateDomains(o); err != nil {
+					o.l.Fatalln(err.Error())
+				}
+			}
+		}
+	})
+	hDomain := widget.NewHBox(domainBox, updateDomains)
 	loginBox := widget.NewButton("logout", func() {
 		o.username = ""
 		o.user = nil
 		// TODO Other logout stuff?
 		o.canChan <- loginCan(o)
 	})
-	//tempBox := widget.NewButton("temp", func() {
-	//	o.canChan <- postCan(o, 0, 50)
-	//})
-	return widget.NewForm(widget.NewFormItem("preset", hPreset), widget.NewFormItem("logout", loginBox))
+	return widget.NewForm(widget.NewFormItem("preset", hPreset), widget.NewFormItem("domains", hDomain),
+		widget.NewFormItem("logout", loginBox))
 }
