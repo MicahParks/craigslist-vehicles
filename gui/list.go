@@ -5,9 +5,27 @@ import (
 	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"gitlab.com/MicahParks/cano-cars/types"
 )
+
+var (
+	errListExists = errors.New("list already exists")
+)
+
+func getList(o *orb, name string) (*types.List, error) {
+	exist := map[string]string{"owner": o.username, "name": name}
+	cursor, err := o.listCol.Find(context.TODO(), exist)
+	if err != nil {
+		return nil, err
+	}
+	list := make([]*types.List, 0)
+	if err = cursor.All(context.TODO(), &list); err != nil {
+		return nil, err
+	}
+	return list[0], nil
+}
 
 func myLists(o *orb) ([]*types.List, error) {
 	own := make([]*types.List, 0)
@@ -22,6 +40,18 @@ func myLists(o *orb) ([]*types.List, error) {
 		return nil, err
 	}
 	return own, nil
+}
+
+func newList(o *orb, name string) (*types.List, error) {
+	list := &types.List{Name: name, Owner: o.username}
+	if res := o.listCol.FindOne(context.TODO(), list); errors.Is(res.Err(), mongo.ErrNoDocuments) {
+		if _, err := o.listCol.InsertOne(context.TODO(), list); err != nil {
+			return nil, err
+		}
+		o.l.Printf("list %s created with %s as the owner", name, o.username)
+		return getList(o, name)
+	}
+	return nil, errListExists
 }
 
 func updateList(o *orb, listId string, list *types.List) error {
