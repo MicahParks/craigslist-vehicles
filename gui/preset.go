@@ -88,8 +88,8 @@ func myPresets(o *orb) (own, shared []*types.Preset, err error) {
 	if err = cursor.All(context.TODO(), &own); err != nil {
 		return nil, nil, err
 	}
-	sharedQuery := bson.M{
-		"subs": []string{o.username},
+	sharedQuery := bson.D{
+		{"subs", o.username},
 	}
 	cursor, err = o.presetCol.Find(context.TODO(), sharedQuery)
 	if err != nil {
