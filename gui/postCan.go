@@ -36,5 +36,5 @@ func postCan(o *orb, posts []*types.Post, start, end int) *fyne.Container {
 	for _, box := range boxes {
 		con.AddObject(box)
 	}
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, nil, nil, nil), header, scroll) // TODO Is this correct?
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, nil, nil, nil), header, scroll)
 }
