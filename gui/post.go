@@ -15,7 +15,7 @@ func getPosts(o *orb, query bson.M, opts ...*options.FindOptions) (posts []*type
 	if err != nil {
 		return nil, err
 	}
-	if err := cursor.All(context.TODO(), &posts); err != nil {
+	if err = cursor.All(context.TODO(), &posts); err != nil {
 		return nil, err
 	}
 	return

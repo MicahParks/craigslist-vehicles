@@ -9,15 +9,16 @@ import (
 )
 
 func postCan(o *orb, posts []*types.Post, start, end int) *fyne.Container {
-	header := fyne.NewContainerWithLayout(layout.NewGridLayout(8))
-	header.AddObject(widget.NewLabel("link"))
-	header.AddObject(widget.NewLabel("price"))
-	header.AddObject(widget.NewLabel("make"))
-	header.AddObject(widget.NewLabel("odometer"))
-	header.AddObject(widget.NewLabel("year"))
-	header.AddObject(widget.NewLabel("color"))
-	header.AddObject(widget.NewLabel("has link"))
-	header.AddObject(widget.NewLabel("candidate"))
+	header := fyne.NewContainerWithLayout(layout.NewGridLayout(8),
+		widget.NewLabel("link"),
+		widget.NewLabel("price"),
+		widget.NewLabel("make"),
+		widget.NewLabel("odometer"),
+		widget.NewLabel("year"),
+		widget.NewLabel("color"),
+		widget.NewLabel("has link"),
+		widget.NewLabel("candidate"),
+	)
 	boxes := rowVBoxes()
 	for i, post := range posts {
 		if i >= start {
@@ -31,10 +32,13 @@ func postCan(o *orb, posts []*types.Post, start, end int) *fyne.Container {
 			break
 		}
 	}
+	back := widget.NewButton("back", func() {
+		o.canChan <- presetCreationCan(o)
+	})
 	con := fyne.NewContainerWithLayout(layout.NewGridLayout(8))
 	scroll := widget.NewScrollContainer(con)
 	for _, box := range boxes {
 		con.AddObject(box)
 	}
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, nil, nil, nil), header, scroll)
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, back, nil, nil), header, back, scroll)
 }

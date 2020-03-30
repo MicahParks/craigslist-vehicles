@@ -6,6 +6,8 @@ import (
 
 func homeCan(o *orb) *widget.Box {
 	presetBox := widget.NewButton("presets", func() {
+		o.username = "test" // TODO Delete this.
+		// TO
 		o.canChan <- presetCan(o)
 	})
 	loginBox := widget.NewButton("logout", func() {
