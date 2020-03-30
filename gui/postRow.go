@@ -23,14 +23,14 @@ type postRow struct {
 }
 
 func rowVBoxes() []*widget.Box {
-	urlBox := widget.NewVBox(widget.NewLabel("link"))
-	priceBox := widget.NewVBox(widget.NewLabel("price"))
-	makeBox := widget.NewVBox(widget.NewLabel("make"))
-	odoBox := widget.NewVBox(widget.NewLabel("odometer"))
-	yearBox := widget.NewVBox(widget.NewLabel("year"))
-	colorBox := widget.NewVBox(widget.NewLabel("color"))
-	linkBox := widget.NewVBox(widget.NewLabel("has link"))
-	candidateBox := widget.NewVBox(widget.NewLabel("candidate"))
+	urlBox := widget.NewVBox()
+	priceBox := widget.NewVBox()
+	makeBox := widget.NewVBox()
+	odoBox := widget.NewVBox()
+	yearBox := widget.NewVBox()
+	colorBox := widget.NewVBox()
+	linkBox := widget.NewVBox()
+	candidateBox := widget.NewVBox()
 	return []*widget.Box{urlBox, priceBox, makeBox, odoBox, yearBox, colorBox, linkBox, candidateBox}
 }
 
