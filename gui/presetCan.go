@@ -98,9 +98,10 @@ func presetCan(o *orb) *widget.Form {
 	yearF := widget.NewFormItem("made after", yearBox)
 
 	submit := widget.NewButton("create", func() {
-		query, err := p.Query(o.l, candidateCheck.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
+		query, err := p.Query(candidateCheck.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
 			linkCheck.Checked, makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text,
 			subdomainBox.Text, yearBox.Text)
+		p.Owner = o.username
 		if err != nil {
 			o.l.Println(err.Error())
 			return

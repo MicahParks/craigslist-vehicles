@@ -1,12 +1,11 @@
 package types
 
 import (
-	"log"
 	"strconv"
 	"strings"
 )
 
-func (p *Preset) Query(l *log.Logger, candidate bool, capPercent, color, discard string, link bool, makeCar,
+func (p *Preset) Query(candidate bool, capPercent, color, discard string, link bool, makeCar,
 	odometer, price, required, subs, subdomains string, year string) (post *Post, err error) {
 	post = &Post{}
 	var hold int
