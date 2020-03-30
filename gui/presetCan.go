@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -36,7 +37,20 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 	)
 	pCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
 	// TODO Build pCon from preset.Query.
-	all := append(owner, sub...)
+	all := make([]*types.Preset, 0, len(owner)+len(sub))
+	add := true
+	for _, preset := range append(owner, sub...) {
+		add = true
+		for _, preset2 := range all {
+			if reflect.DeepEqual(preset.Query, preset2.Query) {
+				add = false
+				break
+			}
+		}
+		if add {
+			all = append(all, preset)
+		}
+	}
 	for _, preset := range all {
 		suffix := ",\n"
 		discards := ""
