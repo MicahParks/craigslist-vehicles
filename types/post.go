@@ -115,7 +115,7 @@ func (p *Post) GetHasLink(titleBody string) {
 	if strings.Contains(titleBody, ".com") ||
 		strings.Contains(titleBody, "http") ||
 		strings.Contains(titleBody, "www") {
-		p.HasLink = true
+		p.Link = true
 	}
 }
 

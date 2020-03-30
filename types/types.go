@@ -1,7 +1,6 @@
 package types
 
 type List struct {
-	Id    string `bson:"_id"`
 	Owner string
 	Subs  []string
 }
@@ -13,30 +12,38 @@ type Marsh struct {
 }
 
 type Post struct {
-	Url         string `bson:"_id"`
-	CapPercent  int
-	Color       string
-	HasLink     bool
-	Text        string
-	Title       string
-	IsCandidate bool
-	Make        string
-	Price       int
-	Odometer    int
-	titleBody   string
-	Year        int
-	Query       []string
-	AttrGroup   map[string]string
+	AttrGroup  map[string]string
+	Candidate  bool
+	CapPercent int
+	Color      string
+	Link       bool
+	Make       string
+	Odometer   int
+	Price      int
+	Subdomain  []string
+	Text       string
+	Title      string
+	Url        string `bson:"_id"`
+	Year       int
+	titleBody  string
 }
 
 type Preset struct {
-	Id      string `bson:"_id"`
-	Color   string
-	Default bool
-	Make    string
-	Owner   string
-	Subs    []string
-	Year    int
+	Everyone bool
+	Owner    string
+	Subs     []string
+
+	Candidate  bool
+	CapPercent int
+	Color      string
+	Discard    []string
+	Link       bool
+	Make       string
+	Odometer   int
+	Price      int
+	Required   []string
+	Subdomain  []string
+	Year       int
 }
 
 type Query struct {

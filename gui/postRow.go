@@ -90,11 +90,11 @@ func (p *postRow) make() error {
 	p.colorBox = widget.NewLabel(p.post.Color)
 
 	p.linkBox = widget.NewCheck("", func(_ bool) {})
-	p.linkBox.Checked = p.post.HasLink
+	p.linkBox.Checked = p.post.Link
 	p.linkBox.Disable()
 
 	p.candidateBox = widget.NewCheck("", func(_ bool) {})
-	p.candidateBox.Checked = p.post.IsCandidate
+	p.candidateBox.Checked = p.post.Candidate
 	p.candidateBox.Disable()
 
 	p.titleBox = widget.NewLabel(p.post.Title)

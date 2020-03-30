@@ -1,9 +1,6 @@
 package main
 
 import (
-	"strconv"
-	"strings"
-
 	"fyne.io/fyne/widget"
 
 	"gitlab.com/MicahParks/cano-cars/types"
@@ -15,6 +12,18 @@ var (
 
 func presetCan(o *orb) *widget.Form {
 	p := &types.Preset{}
+	colorOpts := []string{
+		dontCare,
+		"black",
+		"blue",
+		"brown",
+		"gray",
+		"green",
+		"purple",
+		"red",
+		"white",
+		"yellow",
+	}
 	makeOpts := []string{
 		dontCare,
 		"acura",
@@ -41,63 +50,71 @@ func presetCan(o *orb) *widget.Form {
 		"volkswagen",
 		"volvo",
 	}
-	colorOpts := []string{
-		dontCare,
-		"black",
-		"blue",
-		"brown",
-		"gray",
-		"green",
-		"purple",
-		"red",
-		"white",
-		"yellow",
-	}
-	colorBox := widget.NewSelect(colorOpts, func(color string) {
-		p.Color = color
-	})
+
+	candidateCheck := widget.NewCheck("", func(_ bool) {})
+	candidateF := widget.NewFormItem("candidate", candidateCheck)
+
+	capPercentBox := widget.NewEntry()
+	capPercentBox.SetPlaceHolder("0 through 100 (no percent)")
+	capPercentF := widget.NewFormItem("capitalization percent", capPercentBox)
+
+	colorBox := widget.NewSelect(colorOpts, func(_ string) {})
 	colorBox.SetSelected(dontCare)
 	colorF := widget.NewFormItem("color", colorBox)
-	makeBox := widget.NewSelect(makeOpts, func(make string) {
-		p.Make = make
-	})
+
+	discardBox := widget.NewEntry()
+	discardBox.SetPlaceHolder("discard1, discard2")
+	discardF := widget.NewFormItem("discard", discardBox)
+
+	linkCheck := widget.NewCheck("", func(_ bool) {})
+	linkF := widget.NewFormItem("has link", linkCheck)
+
+	makeBox := widget.NewSelect(makeOpts, func(_ string) {})
 	makeBox.SetSelected(dontCare)
 	makeF := widget.NewFormItem("make", makeBox)
-	modelBox := widget.NewEntry()
-	modelBox.SetPlaceHolder("model or required string")
-	modelF := widget.NewFormItem("unique", modelBox)
+
+	odoBox := widget.NewEntry()
+	odoBox.SetPlaceHolder("100000 (no commas)")
+	odoF := widget.NewFormItem("odometer max", odoBox)
+
+	priceBox := widget.NewEntry()
+	priceBox.SetPlaceHolder("8000 (no commas or dollar signs)")
+	priceF := widget.NewFormItem("price max", priceBox)
+
+	requiredBox := widget.NewEntry()
+	requiredBox.SetPlaceHolder("required1, required2")
+	requiredF := widget.NewFormItem("required", requiredBox)
+
+	subBox := widget.NewEntry()
+	subBox.SetPlaceHolder("username, username2")
+	subF := widget.NewFormItem("share", subBox)
+
+	subdomainBox := widget.NewEntry()
+	subdomainBox.SetPlaceHolder("richmond, washingtondc")
+	subdomainF := widget.NewFormItem("subdomains", subdomainBox)
+
 	yearBox := widget.NewEntry()
-	yearBox.SetPlaceHolder("must be made after this year")
+	yearBox.SetPlaceHolder("Ex. 1990")
 	yearF := widget.NewFormItem("made after", yearBox)
-	shareBox := widget.NewEntry()
-	shareBox.SetPlaceHolder("username, username2")
-	shareF := widget.NewFormItem("share", shareBox)
+
 	submit := widget.NewButton("create", func() {
-		p.Color = colorBox.Selected
-		p.Make = makeBox.Selected
-		subs := strings.Split(shareBox.Text, ",")
-		for _, sub := range subs {
-			p.Subs = append(p.Subs, strings.TrimSpace(sub))
-		}
-		yearStr := strings.TrimSpace(yearBox.Text)
-		if len(yearStr) == 0 {
-			yearStr = "0"
-		}
-		year, err := strconv.Atoi(yearStr)
+		query, err := p.Query(o.l, candidateCheck.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
+			linkCheck.Checked, makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text,
+			subdomainBox.Text, yearBox.Text)
 		if err != nil {
-			o.l.Println("couldn't convert year to integer")
+			o.l.Println(err.Error())
 			return
 		}
-		p.Year = year
 		if err := insertPreset(o, p); err != nil {
 			o.l.Fatalln(err.Error())
 		}
-		posts, err := getPosts(o, p.Query())
+		posts, err := getPosts(o, query)
 		if err != nil {
 			o.l.Fatalln(err.Error())
 		}
 		o.canChan <- postCan(o, posts, 0, 50)
 	})
 	submitF := widget.NewFormItem("create", submit)
-	return widget.NewForm(colorF, makeF, modelF, yearF, shareF, submitF)
+	return widget.NewForm(candidateF, capPercentF, colorF, discardF, linkF, makeF, odoF, priceF, requiredF, subF,
+		subdomainF, yearF, submitF)
 }
