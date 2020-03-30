@@ -5,7 +5,9 @@ import (
 )
 
 type List struct {
+	Id    string `bson:"_id"`
 	Posts []string
+	Name  string
 	Owner string
 	Subs  []string
 }

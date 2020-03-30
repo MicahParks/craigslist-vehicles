@@ -22,6 +22,7 @@ type orb struct {
 	canChan   chan fyne.CanvasObject
 	death     chan struct{}
 	l         *log.Logger
+	listCol   *mongo.Collection
 	postsCol  *mongo.Collection
 	presetCol *mongo.Collection
 	user      *types.User
@@ -41,6 +42,10 @@ func main() {
 	} else {
 		username = strings.TrimSpace(string(userB))
 	}
+	listCol, err := mongodb.Init("List")
+	if err != nil {
+		l.Fatalln(err.Error())
+	}
 	userCol, err := mongodb.Init("User")
 	if err != nil {
 		l.Fatalln(err.Error())
@@ -57,6 +62,7 @@ func main() {
 		canChan:   make(chan fyne.CanvasObject),
 		death:     make(chan struct{}),
 		l:         l,
+		listCol:   listCol,
 		postsCol:  postsCol,
 		presetCol: presetCol,
 		userCol:   userCol,
