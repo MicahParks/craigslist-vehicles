@@ -54,7 +54,7 @@ func (p *postRow) attrBox() *widget.Form {
 	return form
 }
 
-func (p *postRow) make() error {
+func (p *postRow) make(o *orb) error {
 	u, err := url.Parse(p.post.Url)
 	if err != nil {
 		return err
@@ -93,9 +93,16 @@ func (p *postRow) make() error {
 	p.linkBox.Checked = p.post.Link
 	p.linkBox.Disable()
 
-	p.candidateBox = widget.NewCheck("", func(_ bool) {})
+	p.candidateBox = widget.NewCheck("", func(_ bool) {
+		p.candidateBox.Disable()
+		if err := updateCandidate(o, p.post); err != nil {
+			o.l.Fatalln(err.Error())
+		}
+	})
 	p.candidateBox.Checked = p.post.Candidate
-	p.candidateBox.Disable()
+	if p.post.Candidate {
+		p.candidateBox.Disable()
+	}
 
 	p.titleBox = widget.NewLabel(p.post.Title)
 	return nil

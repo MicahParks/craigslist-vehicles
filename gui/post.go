@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -19,4 +20,19 @@ func getPosts(o *orb, query bson.M, opts ...*options.FindOptions) (posts []*type
 		return nil, err
 	}
 	return
+}
+
+func updateCandidate(o *orb, post *types.Post) error {
+	update := bson.D{{"$set", bson.D{{"candidate", true}}}}
+	res, err := o.postsCol.UpdateOne(context.TODO(), bson.M{"_id": post.Url}, update)
+	if err != nil {
+		return err
+	}
+	if res.MatchedCount == 0 {
+		return errors.New("post not found")
+	}
+	if res.UpsertedCount != 0 {
+		return errors.New("created a new post instead of updating")
+	}
+	return nil
 }

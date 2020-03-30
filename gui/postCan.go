@@ -23,7 +23,7 @@ func postCan(o *orb, posts []*types.Post, start, end int) *fyne.Container {
 	for i, post := range posts {
 		if i >= start {
 			pR := postRow{post: post}
-			if err := pR.make(); err != nil {
+			if err := pR.make(o); err != nil {
 				o.l.Fatalln(err.Error())
 			}
 			pR.append(boxes)
