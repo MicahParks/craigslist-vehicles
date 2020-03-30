@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
@@ -8,7 +10,7 @@ import (
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
-func postCan(o *orb, posts []*types.Post, start, end int) *fyne.Container {
+func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) *fyne.Container {
 	header := fyne.NewContainerWithLayout(layout.NewGridLayout(8),
 		widget.NewLabel("link"),
 		widget.NewLabel("price"),
@@ -40,5 +42,27 @@ func postCan(o *orb, posts []*types.Post, start, end int) *fyne.Container {
 	for _, box := range boxes {
 		con.AddObject(box)
 	}
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, back, nil, nil), header, back, scroll)
+	info := widget.NewLabel(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)))
+	left := widget.NewButton("<", func() {
+		start = start - 50
+		end = end - 50
+		if start < 0 {
+			start = 0
+			end = 50
+		}
+		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)))
+		o.canChan <- postCan(o, posts, preset, start, end)
+	})
+	right := widget.NewButton(">", func() {
+		start = start + 50
+		end = end + 50
+		if end-1 > len(posts) {
+			end = len(posts) - 1
+			start = end - 1
+		}
+		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)))
+		o.canChan <- postCan(o, posts, preset, start, end)
+	})
+	topH := widget.NewVBox(info, header)
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(topH, back, left, right), topH, back, left, right, scroll)
 }

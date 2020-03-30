@@ -26,7 +26,7 @@ func homeCan(o *orb) *widget.Form {
 	domains = strings.TrimSuffix(domains, suffix)
 	domainBox := widget.NewEntry()
 	domainBox.SetText(domains)
-	updateDomains := widget.NewButton("update", func() {
+	upDomainsBox := widget.NewButton("update", func() {
 		domains := make([]string, 0)
 		for _, d := range strings.Split(domainBox.Text, suffix) {
 			d = strings.TrimSpace(d)
@@ -41,7 +41,7 @@ func homeCan(o *orb) *widget.Form {
 			}
 		}
 	})
-	hDomain := widget.NewHBox(domainBox, updateDomains)
+	hDomain := widget.NewHBox(domainBox, upDomainsBox)
 	loginBox := widget.NewButton("logout", func() {
 		o.username = ""
 		o.user = nil

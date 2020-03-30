@@ -77,7 +77,7 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 			if err != nil {
 				o.l.Fatalln(err.Error())
 			}
-			o.canChan <- postCan(o, posts, 0, 50)
+			o.canChan <- postCan(o, posts, preset, 0, 50)
 		}))
 		subdomains = strings.TrimSuffix(subdomains, suffix)
 		pCon.AddObject(widget.NewLabel(strconv.FormatBool(preset.Candidate)))
