@@ -102,18 +102,17 @@ func presetCreationCan(o *orb) *widget.Form {
 	yearF := widget.NewFormItem("made after", yearBox)
 
 	submit := widget.NewButton("create", func() {
-		query, err := p.Query(candidateCheck.Checked, candidateUse.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
+		if err := p.MakeQuery(candidateCheck.Checked, candidateUse.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
 			linkCheck.Checked, linkUse.Checked, makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text,
-			subdomainBox.Text, yearBox.Text)
-		if err != nil {
+			subdomainBox.Text, yearBox.Text); err != nil {
 			o.l.Println(err.Error())
 			return
 		}
 		p.Owner = o.username
-		if err = insertPreset(o, p); err != nil {
+		if err := insertPreset(o, p); err != nil {
 			o.l.Fatalln(err.Error())
 		}
-		posts, err := getPosts(o, query)
+		posts, err := getPosts(o, p.Query)
 		if err != nil {
 			o.l.Fatalln(err.Error())
 		}

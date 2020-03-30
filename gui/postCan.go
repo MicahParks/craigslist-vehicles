@@ -33,7 +33,7 @@ func postCan(o *orb, posts []*types.Post, start, end int) *fyne.Container {
 		}
 	}
 	back := widget.NewButton("back", func() {
-		o.canChan <- presetCreationCan(o)
+		o.canChan <- presetCan(o)
 	})
 	con := fyne.NewContainerWithLayout(layout.NewGridLayout(8))
 	scroll := widget.NewScrollContainer(con)

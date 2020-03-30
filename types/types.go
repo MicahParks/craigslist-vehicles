@@ -1,5 +1,9 @@
 package types
 
+import (
+	"go.mongodb.org/mongo-driver/bson"
+)
+
 type List struct {
 	Owner string
 	Subs  []string
@@ -32,6 +36,7 @@ type Preset struct {
 	Everyone bool
 	Owner    string
 	Subs     []string
+	Query    bson.M
 
 	Candidate  bool
 	CapPercent int

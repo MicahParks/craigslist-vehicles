@@ -59,18 +59,25 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		for _, s := range own.SubDomains {
 			subdomains += s + suffix
 		}
+		click := func() {
+			posts, err := getPosts(o, own.Query)
+			if err != nil {
+				o.l.Fatalln(err.Error())
+			}
+			o.canChan <- postCan(o, posts, 0, 50)
+		}
 		subdomains = strings.TrimSuffix(subdomains, suffix)
-		pCon.AddObject(widget.NewLabel(strconv.FormatBool(own.Candidate)))
-		pCon.AddObject(widget.NewLabel(strconv.Itoa(own.CapPercent)))
-		pCon.AddObject(widget.NewLabel(own.Color))
-		pCon.AddObject(widget.NewLabel(discards))
-		pCon.AddObject(widget.NewLabel(strconv.FormatBool(own.Link)))
-		pCon.AddObject(widget.NewLabel(own.Make))
-		pCon.AddObject(widget.NewLabel(strconv.Itoa(own.Odometer)))
-		pCon.AddObject(widget.NewLabel(strconv.Itoa(own.Price)))
-		pCon.AddObject(widget.NewLabel(require))
-		pCon.AddObject(widget.NewLabel(shares))
-		pCon.AddObject(widget.NewLabel(subdomains))
+		pCon.AddObject(widget.NewButton(strconv.FormatBool(own.Candidate), click))
+		pCon.AddObject(widget.NewButton(strconv.Itoa(own.CapPercent), click))
+		pCon.AddObject(widget.NewButton(own.Color, click))
+		pCon.AddObject(widget.NewButton(discards, click))
+		pCon.AddObject(widget.NewButton(strconv.FormatBool(own.Link), click))
+		pCon.AddObject(widget.NewButton(own.Make, click))
+		pCon.AddObject(widget.NewButton(strconv.Itoa(own.Odometer), click))
+		pCon.AddObject(widget.NewButton(strconv.Itoa(own.Price), click))
+		pCon.AddObject(widget.NewButton(require, click))
+		pCon.AddObject(widget.NewButton(shares, click))
+		pCon.AddObject(widget.NewButton(subdomains, click))
 	}
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, nil, nil, nil), header, pCon)
 }

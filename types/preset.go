@@ -7,8 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (p *Preset) Query(candidate, candidateUse bool, capPercent, color, discard string, link, linkUse bool, makeCar,
-	odometer, price, required, subs, subDomains, year string) (query bson.M, err error) {
+func (p *Preset) MakeQuery(candidate, candidateUse bool, capPercent, color, discard string, link, linkUse bool, makeCar,
+	odometer, price, required, subs, subDomains, year string) error {
 	capPercent = strings.TrimSpace(capPercent)
 	color = strings.TrimSpace(color)
 	discard = strings.TrimSpace(discard)
@@ -20,8 +20,9 @@ func (p *Preset) Query(candidate, candidateUse bool, capPercent, color, discard 
 	subDomains = strings.TrimSpace(subDomains)
 	year = strings.TrimSpace(year)
 	var hold int
+	var err error
 	post := &Post{}
-	query = bson.M{}
+	query := bson.M{}
 	if candidateUse {
 		query["candidate"] = candidate
 		p.Candidate = candidate
@@ -30,7 +31,7 @@ func (p *Preset) Query(candidate, candidateUse bool, capPercent, color, discard 
 	if len(capPercent) != 0 {
 		hold, err = strconv.Atoi(capPercent)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		// TODO Add this to the query.
 		p.CapPercent = hold
@@ -63,7 +64,7 @@ func (p *Preset) Query(candidate, candidateUse bool, capPercent, color, discard 
 	if len(odometer) != 0 {
 		hold, err = strconv.Atoi(odometer)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		// TODO Add this to the query.
 		p.Odometer = hold
@@ -72,7 +73,7 @@ func (p *Preset) Query(candidate, candidateUse bool, capPercent, color, discard 
 	if len(price) != 0 {
 		hold, err = strconv.Atoi(price)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		// TODO Add this to the query.
 		p.Price = hold
@@ -109,11 +110,12 @@ func (p *Preset) Query(candidate, candidateUse bool, capPercent, color, discard 
 	if len(year) != 0 {
 		hold, err = strconv.Atoi(year)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		// TODO Add this to the query.
 		p.Year = hold
 		post.Year = hold
 	}
-	return
+	p.Query = query
+	return nil
 }
