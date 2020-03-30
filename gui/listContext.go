@@ -12,6 +12,13 @@ func listAdd(o *orb, post *types.Post, back fyne.CanvasObject) {
 	if err != nil {
 		o.l.Fatalln(err.Error())
 	}
+	if len(lists) == 0 {
+		l, err := newList(o, "default")
+		if err != nil {
+			o.l.Fatalln(err.Error())
+		}
+		lists = []*types.List{l}
+	}
 	form := widget.NewForm()
 	for _, l := range lists {
 		form.Append(l.Name, widget.NewButton("add", func() {
