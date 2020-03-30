@@ -101,11 +101,11 @@ func presetCan(o *orb) *widget.Form {
 		query, err := p.Query(candidateCheck.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
 			linkCheck.Checked, makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text,
 			subdomainBox.Text, yearBox.Text)
-		p.Owner = o.username
 		if err != nil {
 			o.l.Println(err.Error())
 			return
 		}
+		p.Owner = o.username
 		if err := insertPreset(o, p); err != nil {
 			o.l.Fatalln(err.Error())
 		}

@@ -42,7 +42,7 @@ type Preset struct {
 	Odometer   int
 	Price      int
 	Required   []string
-	Subdomain  []string
+	SubDomains []string
 	Year       int
 }
 

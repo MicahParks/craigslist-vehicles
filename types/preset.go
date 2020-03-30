@@ -6,7 +6,7 @@ import (
 )
 
 func (p *Preset) Query(candidate bool, capPercent, color, discard string, link bool, makeCar,
-	odometer, price, required, subs, subdomains string, year string) (post *Post, err error) {
+	odometer, price, required, subs, subDomains string, year string) (post *Post, err error) {
 	post = &Post{}
 	var hold int
 	p.Candidate = candidate
@@ -69,6 +69,15 @@ func (p *Preset) Query(candidate bool, capPercent, color, discard string, link b
 			sub = strings.TrimSpace(sub)
 			if len(sub) != 0 {
 				p.Subs = append(p.Subs, sub)
+			}
+		}
+	}
+	if len(subDomains) != 0 {
+		p.SubDomains = make([]string, 0)
+		for _, subD := range strings.Split(subDomains, ",") {
+			subD = strings.TrimSpace(subD)
+			if len(subD) != 0 {
+				p.SubDomains = append(p.SubDomains, subD)
 			}
 		}
 	}
