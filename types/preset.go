@@ -3,12 +3,16 @@ package types
 import (
 	"strconv"
 	"strings"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func (p *Preset) Query(candidate bool, capPercent, color, discard string, link bool, makeCar,
-	odometer, price, required, subs, subDomains string, year string) (post *Post, err error) {
-	post = &Post{}
+	odometer, price, required, subs, subDomains string, year string) (query bson.M, err error) {
 	var hold int
+	post := &Post{}
+	query = bson.M{}
+	query["candidate"] = candidate
 	p.Candidate = candidate
 	post.Candidate = candidate
 	if len(capPercent) != 0 {
@@ -16,10 +20,12 @@ func (p *Preset) Query(candidate bool, capPercent, color, discard string, link b
 		if err != nil {
 			return nil, err
 		}
+		// TODO Add this to the query.
 		p.CapPercent = hold
 		post.CapPercent = hold
 	}
 	if len(color) != 0 {
+		query["color"] = color
 		p.Color = color
 		post.Color = color
 	}
@@ -32,9 +38,11 @@ func (p *Preset) Query(candidate bool, capPercent, color, discard string, link b
 			}
 		}
 	}
+	query["link"] = link
 	p.Link = link
 	post.Link = link
 	if len(makeCar) != 0 {
+		query["make"] = makeCar
 		p.Make = makeCar
 		post.Make = makeCar
 	}
@@ -43,6 +51,7 @@ func (p *Preset) Query(candidate bool, capPercent, color, discard string, link b
 		if err != nil {
 			return nil, err
 		}
+		// TODO Add this to the query.
 		p.Odometer = hold
 		post.Odometer = hold
 	}
@@ -51,6 +60,7 @@ func (p *Preset) Query(candidate bool, capPercent, color, discard string, link b
 		if err != nil {
 			return nil, err
 		}
+		// TODO Add this to the query.
 		p.Price = hold
 		post.Price = hold
 	}
@@ -80,14 +90,16 @@ func (p *Preset) Query(candidate bool, capPercent, color, discard string, link b
 				p.SubDomains = append(p.SubDomains, subD)
 			}
 		}
+		// TODO Add this to the query.
 	}
 	if len(year) != 0 {
 		hold, err = strconv.Atoi(year)
 		if err != nil {
 			return nil, err
 		}
+		// TODO Add this to the query.
 		p.Year = hold
 		post.Year = hold
 	}
-	return post, nil
+	return
 }
