@@ -52,7 +52,9 @@ func presetCan(o *orb) *widget.Form {
 	}
 
 	candidateCheck := widget.NewCheck("", func(_ bool) {})
-	candidateF := widget.NewFormItem("candidate", candidateCheck)
+	candidateUse := widget.NewCheck("use", func(_ bool) {})
+	cH := widget.NewHBox(candidateCheck, candidateUse)
+	candidateF := widget.NewFormItem("candidate", cH)
 
 	capPercentBox := widget.NewEntry()
 	capPercentBox.SetPlaceHolder("0 through 100 (no percent)")
@@ -67,7 +69,10 @@ func presetCan(o *orb) *widget.Form {
 	discardF := widget.NewFormItem("discard", discardBox)
 
 	linkCheck := widget.NewCheck("", func(_ bool) {})
-	linkF := widget.NewFormItem("has link", linkCheck)
+	linkUse := widget.NewCheck("use", func(_ bool) {})
+	linkUse.SetChecked(true)
+	lH := widget.NewHBox(linkCheck, linkUse)
+	linkF := widget.NewFormItem("has link", lH)
 
 	makeBox := widget.NewSelect(makeOpts, func(_ string) {})
 	makeBox.SetSelected(dontCare)
@@ -98,8 +103,8 @@ func presetCan(o *orb) *widget.Form {
 	yearF := widget.NewFormItem("made after", yearBox)
 
 	submit := widget.NewButton("create", func() {
-		query, err := p.Query(candidateCheck.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
-			linkCheck.Checked, makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text,
+		query, err := p.Query(candidateCheck.Checked, candidateUse.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
+			linkCheck.Checked, linkUse.Checked, makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text,
 			subdomainBox.Text, yearBox.Text)
 		if err != nil {
 			o.l.Println(err.Error())

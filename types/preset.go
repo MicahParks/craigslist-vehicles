@@ -7,14 +7,26 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (p *Preset) Query(candidate bool, capPercent, color, discard string, link bool, makeCar,
-	odometer, price, required, subs, subDomains string, year string) (query bson.M, err error) {
+func (p *Preset) Query(candidate, candidateUse bool, capPercent, color, discard string, link, linkUse bool, makeCar,
+	odometer, price, required, subs, subDomains, year string) (query bson.M, err error) {
+	capPercent = strings.TrimSpace(capPercent)
+	color = strings.TrimSpace(color)
+	discard = strings.TrimSpace(discard)
+	makeCar = strings.TrimSpace(makeCar)
+	odometer = strings.TrimSpace(odometer)
+	price = strings.TrimSpace(price)
+	required = strings.TrimSpace(required)
+	subs = strings.TrimSpace(subs)
+	subDomains = strings.TrimSpace(subDomains)
+	year = strings.TrimSpace(year)
 	var hold int
 	post := &Post{}
 	query = bson.M{}
-	query["candidate"] = candidate
-	p.Candidate = candidate
-	post.Candidate = candidate
+	if candidateUse {
+		query["candidate"] = candidate
+		p.Candidate = candidate
+		post.Candidate = candidate
+	}
 	if len(capPercent) != 0 {
 		hold, err = strconv.Atoi(capPercent)
 		if err != nil {
@@ -38,9 +50,11 @@ func (p *Preset) Query(candidate bool, capPercent, color, discard string, link b
 			}
 		}
 	}
-	query["link"] = link
-	p.Link = link
-	post.Link = link
+	if linkUse {
+		query["link"] = link
+		p.Link = link
+		post.Link = link
+	}
 	if len(makeCar) != 0 {
 		query["make"] = makeCar
 		p.Make = makeCar
