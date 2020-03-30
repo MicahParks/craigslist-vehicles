@@ -5,6 +5,7 @@ import (
 )
 
 type List struct {
+	Posts []string
 	Owner string
 	Subs  []string
 }

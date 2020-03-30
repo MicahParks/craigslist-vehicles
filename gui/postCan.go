@@ -50,7 +50,7 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 			start = 0
 			end = 50
 		}
-		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)))
+		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)-1))
 		o.canChan <- postCan(o, posts, preset, start, end)
 	})
 	right := widget.NewButton(">", func() {
@@ -60,7 +60,7 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 			end = len(posts) - 1
 			start = end - 1
 		}
-		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)))
+		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)-1))
 		o.canChan <- postCan(o, posts, preset, start, end)
 	})
 	topH := widget.NewVBox(info, header)

@@ -35,8 +35,7 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		widget.NewLabel("shared with"),
 		widget.NewLabel("subdomains"),
 	)
-	pCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
-	// TODO Build pCon from preset.Query.
+	// TODO Build vCon from preset.Query.
 	all := make([]*types.Preset, 0, len(owner)+len(sub))
 	add := true
 	for _, preset := range append(owner, sub...) {
@@ -51,6 +50,14 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 			all = append(all, preset)
 		}
 	}
+	everyoneCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
+	everyoneBox := widget.NewGroup("default", everyoneCon)
+	mineCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
+	mineBox := widget.NewGroup("mine", mineCon)
+	sharedCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
+	sharedBox := widget.NewGroup("shared with me", sharedCon)
+	vCon := widget.NewVBox(everyoneBox, mineBox, sharedBox)
+	var con *fyne.Container
 	for _, preset := range all {
 		suffix := ",\n"
 		discards := ""
@@ -72,28 +79,35 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		for _, s := range preset.SubDomains {
 			subdomains += s + suffix
 		}
-		pCon.AddObject(widget.NewButton("use", func() {
+		subdomains = strings.TrimSuffix(subdomains, suffix)
+		con = sharedCon
+		if preset.Everyone {
+			con = everyoneCon
+		} else if o.username == preset.Owner {
+			con = mineCon
+		}
+		con.AddObject(widget.NewButton("use", func() {
 			posts, err := getPosts(o, preset.Query)
 			if err != nil {
 				o.l.Fatalln(err.Error())
 			}
 			o.canChan <- postCan(o, posts, preset, 0, 50)
 		}))
-		subdomains = strings.TrimSuffix(subdomains, suffix)
-		pCon.AddObject(widget.NewLabel(strconv.FormatBool(preset.Candidate)))
-		pCon.AddObject(widget.NewLabel(strconv.Itoa(preset.CapPercent)))
-		pCon.AddObject(widget.NewLabel(preset.Color))
-		pCon.AddObject(widget.NewLabel(discards))
-		pCon.AddObject(widget.NewLabel(strconv.FormatBool(preset.Link)))
-		pCon.AddObject(widget.NewLabel(preset.Make))
-		pCon.AddObject(widget.NewLabel(strconv.Itoa(preset.Odometer)))
-		pCon.AddObject(widget.NewLabel(strconv.Itoa(preset.Price)))
-		pCon.AddObject(widget.NewLabel(require))
-		pCon.AddObject(widget.NewLabel(shares))
-		pCon.AddObject(widget.NewLabel(subdomains))
+		con.AddObject(widget.NewLabel(strconv.FormatBool(preset.Candidate)))
+		con.AddObject(widget.NewLabel(strconv.Itoa(preset.CapPercent)))
+		con.AddObject(widget.NewLabel(preset.Color))
+		con.AddObject(widget.NewLabel(discards))
+		con.AddObject(widget.NewLabel(strconv.FormatBool(preset.Link)))
+		con.AddObject(widget.NewLabel(preset.Make))
+		con.AddObject(widget.NewLabel(strconv.Itoa(preset.Odometer)))
+		con.AddObject(widget.NewLabel(strconv.Itoa(preset.Price)))
+		con.AddObject(widget.NewLabel(require))
+		con.AddObject(widget.NewLabel(shares))
+		con.AddObject(widget.NewLabel(subdomains))
 	}
 	back := widget.NewButton("back", func() {
 		o.canChan <- homeCan(o)
 	})
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, back, nil, nil), header, back, pCon)
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, back, nil, nil), header, back,
+		widget.NewScrollContainer(vCon))
 }
