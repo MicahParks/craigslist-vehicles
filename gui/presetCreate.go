@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"fyne.io/fyne/widget"
 
 	"gitlab.com/MicahParks/cano-cars/types"
@@ -94,7 +96,12 @@ func presetCreationCan(o *orb) *widget.Form {
 	subF := widget.NewFormItem("share", subBox)
 
 	subdomainBox := widget.NewEntry()
-	subdomainBox.SetPlaceHolder("richmond, washingtondc")
+	domains := ""
+	suffix := ", "
+	for _, d := range o.user.Domains {
+		domains += d + suffix
+	}
+	subdomainBox.SetText(strings.TrimSuffix(domains, suffix))
 	subdomainF := widget.NewFormItem("subdomains", subdomainBox)
 
 	yearBox := widget.NewEntry()

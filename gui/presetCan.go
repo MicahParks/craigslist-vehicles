@@ -20,7 +20,8 @@ func presetCan(o *orb) *fyne.Container {
 }
 
 func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
-	header := fyne.NewContainerWithLayout(layout.NewGridLayout(11),
+	header := fyne.NewContainerWithLayout(layout.NewGridLayout(12),
+		widget.NewLabel("use"),
 		widget.NewLabel("candidate"),
 		widget.NewLabel("capitalization"),
 		widget.NewLabel("color"),
@@ -33,7 +34,7 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		widget.NewLabel("shared with"),
 		widget.NewLabel("subdomains"),
 	)
-	pCon := fyne.NewContainerWithLayout(layout.NewGridLayout(11))
+	pCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
 	all := append(owner, sub...)
 	for _, own := range all {
 		suffix := ",\n"
