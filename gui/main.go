@@ -38,7 +38,7 @@ func main() {
 		if !os.IsNotExist(err) {
 			l.Fatalln(err.Error())
 		}
-		canLogin = false
+		canLogin = true // TODO Make false.
 	} else {
 		username = strings.TrimSpace(string(userB))
 	}

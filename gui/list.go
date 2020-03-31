@@ -43,7 +43,7 @@ func myLists(o *orb) ([]*types.List, error) {
 }
 
 func newList(o *orb, name string) (*types.List, error) {
-	list := &types.List{Name: name, Owner: o.username}
+	list := &types.List{Id: o.username + name, Name: name, Owner: o.username}
 	if res := o.listCol.FindOne(context.TODO(), list); errors.Is(res.Err(), mongo.ErrNoDocuments) {
 		if _, err := o.listCol.InsertOne(context.TODO(), list); err != nil {
 			return nil, err
