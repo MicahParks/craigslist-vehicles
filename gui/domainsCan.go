@@ -8,6 +8,9 @@ import (
 
 var (
 	domains = map[string]bool{
+		"frederick":    false,
+		"lynchburg":    false,
+		"norfolk":      false,
 		"richmond":     true,
 		"washingtondc": false,
 	}
