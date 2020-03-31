@@ -4,6 +4,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+type Domains struct {
+	Default bool
+	Domain  string `bson:"_id"`
+}
+
 type List struct {
 	Id    string `bson:"_id"`
 	Posts []string
@@ -54,10 +59,6 @@ type Preset struct {
 	Year       int
 }
 
-type Query struct {
-	Default bool
-	Url     string `bson:"_id"`
-}
 type User struct {
 	Domains  []string
 	Username string `bson:"_id"`
