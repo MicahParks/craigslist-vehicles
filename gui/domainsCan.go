@@ -51,5 +51,8 @@ func domainsCan(o *orb) *fyne.Container {
 		}))
 		con.AddObject(check)
 	}
-	return con
+	back := widget.NewButton("back", func() {
+		o.canChan <- homeCan(o)
+	})
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, back, nil, nil), back, con)
 }

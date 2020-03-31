@@ -16,7 +16,14 @@ func presetCan(o *orb) *fyne.Container {
 	if err != nil {
 		o.l.Fatalln(err.Error())
 	}
-	return presetPreview(o, own, sub)
+	createPresetBox := widget.NewButton("new", func() {
+		o.canChan <- presetCreationCan(o)
+	})
+	back := widget.NewButton("back", func() {
+		o.canChan <- homeCan(o)
+	})
+	v := widget.NewVBox(createPresetBox, back)
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, v, nil, nil), v, presetPreview(o, own, sub))
 }
 
 func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
@@ -90,9 +97,6 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		con.AddObject(widget.NewLabel(shares))
 		con.AddObject(widget.NewLabel(subdomains))
 	}
-	back := widget.NewButton("back", func() {
-		o.canChan <- homeCan(o)
-	})
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, back, nil, nil), header, back,
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(header, nil, nil, nil), header,
 		widget.NewScrollContainer(vCon))
 }

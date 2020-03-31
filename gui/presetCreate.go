@@ -131,7 +131,7 @@ func presetCreationCan(o *orb) *fyne.Container {
 	form := widget.NewForm(candidateF, capPercentF, colorF, discardF, linkF, makeF, odoF, priceF, requiredF, subF,
 		subdomainF, yearF, submitF)
 	back := widget.NewButton("back", func() {
-		o.canChan <- homeCan(o)
+		o.canChan <- presetCan(o)
 	})
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, back, nil, nil), back, form)
 }
