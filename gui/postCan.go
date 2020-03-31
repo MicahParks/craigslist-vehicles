@@ -29,7 +29,7 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 			if err := pR.make(o); err != nil {
 				o.l.Fatalln(err.Error())
 			}
-			pR.append(o, boxes)
+			pR.append(o, boxes, posts, preset, start, end)
 		}
 		if i >= end {
 			break

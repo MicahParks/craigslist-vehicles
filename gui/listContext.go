@@ -1,13 +1,12 @@
 package main
 
 import (
-	"fyne.io/fyne"
 	"fyne.io/fyne/widget"
 
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
-func listAdd(o *orb, post *types.Post, back fyne.CanvasObject) *widget.Form {
+func listAdd(o *orb, post *types.Post, posts []*types.Post, preset *types.Preset, start, end int) *widget.Form {
 	lists, err := myLists(o)
 	if err != nil {
 		o.l.Fatalln(err.Error())
@@ -20,6 +19,7 @@ func listAdd(o *orb, post *types.Post, back fyne.CanvasObject) *widget.Form {
 		lists = []*types.List{l}
 	}
 	form := widget.NewForm()
+	back := postCan(o, posts, preset, start, end)
 	for _, l := range lists {
 		form.Append(l.Name, widget.NewButton("add", func() {
 			for _, p := range l.Posts {
