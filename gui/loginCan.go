@@ -19,7 +19,6 @@ func loginCan(o *orb) *widget.Box {
 		err := authenticate(o, passwordBox.Text, usernameBox.Text)
 		if err != nil {
 			if errors.Is(err, errAuth) || errors.Is(err, errNotFound) {
-				// TODO Report error to the user.
 				o.l.Println(err.Error())
 				return
 			}
@@ -48,7 +47,6 @@ func registerCan(o *orb) fyne.CanvasObject {
 		err := newUser(o, passwordBox.Text, usernameBox.Text)
 		if err != nil {
 			if errors.Is(err, errUserExist) {
-				// TODO Report error to the user.
 				o.l.Println(err.Error())
 				return
 			}

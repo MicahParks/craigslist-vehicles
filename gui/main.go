@@ -8,6 +8,7 @@ import (
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
+	"fyne.io/fyne/widget"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"gitlab.com/MicahParks/cano-cars/mongodb"
@@ -28,6 +29,16 @@ type orb struct {
 	user      *types.User
 	userCol   *mongo.Collection
 	username  string
+}
+
+type logWriter struct {
+	w *widget.Entry
+}
+
+func (l logWriter) Write(p []byte) (int, error) {
+	l.w.SetText(l.w.Text + "\n" + string(p))
+	println(string(p))
+	return len(p), nil
 }
 
 func main() {
@@ -70,12 +81,19 @@ func main() {
 	}
 	a := app.New()
 	w := a.NewWindow("cars")
-	//w.SetContent(homeCan(o))
+	logs := widget.NewMultiLineEntry()
+	lW := &logWriter{w: logs}
+	l.SetOutput(lW)
+	logs.Disable()
+	scrollTab := widget.NewTabItem("logs", widget.NewScrollContainer(logs))
+	programTab := widget.NewTabItem("program", widget.NewLabel(""))
+	con := widget.NewTabContainer(programTab, scrollTab)
 	if canLogin {
-		w.SetContent(loginCan(o))
+		programTab.Content = loginCan(o)
 	} else {
-		w.SetContent(registerCan(o))
+		programTab.Content = registerCan(o)
 	}
+	w.SetContent(con)
 	go func() {
 		for {
 			select {
@@ -83,7 +101,8 @@ func main() {
 				a.Quit()
 				return
 			case can := <-o.canChan:
-				w.SetContent(can)
+				programTab.Content = can
+				con.Refresh()
 			}
 		}
 	}()

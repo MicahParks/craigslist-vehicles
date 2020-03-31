@@ -42,7 +42,6 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		widget.NewLabel("subdomains"),
 		widget.NewLabel("year"),
 	)
-	// TODO Build vCon from preset.Query.
 	everyoneCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
 	everyoneBox := widget.NewGroup("default", everyoneCon)
 	mineCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
