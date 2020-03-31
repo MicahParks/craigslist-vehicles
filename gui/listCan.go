@@ -15,7 +15,7 @@ func listCan(o *orb) *fyne.Container {
 	if err != nil {
 		o.l.Fatalln(err.Error())
 	}
-	con := fyne.NewContainerWithLayout(layout.NewGridLayout(3))
+	con := fyne.NewContainerWithLayout(layout.NewGridLayout(4))
 	for _, list := range append(lists, shared...) {
 		con.AddObject(widget.NewLabel(list.Name))
 		if len(list.Posts) > 0 {
@@ -24,6 +24,17 @@ func listCan(o *orb) *fyne.Container {
 			if err != nil {
 				o.l.Fatalln(err.Error())
 			}
+			if list.Subs == nil {
+				list.Subs = make([]string, 0)
+			}
+			subBox := widget.NewButton("share", func() {
+				userPop(o, &list.Subs, func() {
+					if err := updateList(o, list.Id, list); err != nil {
+						o.l.Fatalln(err.Error())
+					}
+				}).Show() // Lol the last four lines are crazy.
+			})
+			con.AddObject(subBox)
 			con.AddObject(widget.NewButton("view", func() {
 				o.canChan <- postCan(o, posts, list.Owner, 0, 50, listCan)
 			}))

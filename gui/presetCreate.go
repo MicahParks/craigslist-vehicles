@@ -96,38 +96,7 @@ func presetCreationCan(o *orb) *fyne.Container {
 
 	shares := make([]string, 0)
 	subBox := widget.NewButton("share", func() {
-		usernames, err := allUsernames(o)
-		if err != nil {
-			o.l.Fatalln(err)
-		}
-		v := widget.NewVBox()
-		for _, u := range usernames {
-			name := u
-			check := widget.NewCheck(name, func(b bool) {
-				if b {
-					shares = append(shares, name)
-				} else {
-					for i := 0; i < len(shares); i++ {
-						if name == shares[i] {
-							shares = append(shares[:i], shares[i+1:]...)
-							break
-						}
-					}
-				}
-			})
-			if name == o.username {
-				check.Disable()
-			} else {
-				for _, s := range shares {
-					if u == s {
-						check.SetChecked(true)
-						break
-					}
-				}
-			}
-			v.Append(check)
-		}
-		widget.NewPopUp(v, o.current).Show()
+		userPop(o, &shares).Show()
 	})
 
 	subF := widget.NewFormItem("share", subBox)
