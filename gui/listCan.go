@@ -14,11 +14,7 @@ func listCan(o *orb) *fyne.Container {
 	}
 	con := fyne.NewContainerWithLayout(layout.NewGridLayout(3))
 	for _, list := range append(lists, shared...) {
-		b := bson.D{}
-		for _, post := range list.Posts {
-			b = bson.D{bson.E{Key: post, Value: post}}
-		}
-		query := bson.M{"$in": b}
+		query := bson.M{"_id": bson.M{"$in": list.Posts}}
 		posts, err := getPosts(o, query)
 		if err != nil {
 			o.l.Fatalln(err.Error())

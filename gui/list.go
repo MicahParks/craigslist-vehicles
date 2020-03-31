@@ -18,6 +18,7 @@ func deleteList(o *orb, id string) error {
 	if res := o.listCol.FindOneAndDelete(context.TODO(), map[string]string{"_id": id}); res.Err() != nil {
 		return res.Err()
 	}
+	return nil
 }
 
 func getList(o *orb, name string) (*types.List, error) {
@@ -33,8 +34,9 @@ func getList(o *orb, name string) (*types.List, error) {
 	return list[0], nil
 }
 
-func myLists(o *orb) (own, shared []*types.List, err error) {
-	lists := make([]*types.List, 0)
+func myLists(o *orb) (mine, shared []*types.List, err error) {
+	mine = make([]*types.List, 0)
+	shared = make([]*types.List, 0)
 	ownQuery := bson.M{
 		"owner": o.username,
 	}
@@ -42,7 +44,7 @@ func myLists(o *orb) (own, shared []*types.List, err error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	if err = cursor.All(context.TODO(), &lists); err != nil {
+	if err = cursor.All(context.TODO(), &mine); err != nil {
 		return nil, nil, err
 	}
 	sharedQuery := bson.D{
@@ -55,7 +57,7 @@ func myLists(o *orb) (own, shared []*types.List, err error) {
 	if err = cursor.All(context.TODO(), &shared); err != nil {
 		return nil, nil, err
 	}
-	return own, shared, nil
+	return mine, shared, nil
 }
 
 func newList(o *orb, name string) (*types.List, error) {

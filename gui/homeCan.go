@@ -42,12 +42,15 @@ func homeCan(o *orb) *widget.Form {
 		}
 	})
 	hDomain := widget.NewHBox(domainBox, upDomainsBox)
-	loginBox := widget.NewButton("logout", func() {
+	listBox := widget.NewButton("lists", func() {
+		o.canChan <- listCan(o)
+	})
+	logoutBox := widget.NewButton("logout", func() {
 		o.username = ""
 		o.user = nil
 		// TODO Other logout stuff?
 		o.canChan <- loginCan(o)
 	})
 	return widget.NewForm(widget.NewFormItem("preset", hPreset), widget.NewFormItem("domains", hDomain),
-		widget.NewFormItem("logout", loginBox))
+		widget.NewFormItem("lists", listBox), widget.NewFormItem("logout", logoutBox))
 }
