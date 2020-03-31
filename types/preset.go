@@ -11,11 +11,11 @@ func (p *Preset) MakeQuery(candidate, candidateUse bool, capPercent, color, disc
 	odometer, price, required, subs, subDomains, year string) error {
 	capPercent = strings.TrimSpace(capPercent)
 	color = strings.TrimSpace(color)
-	discard = strings.TrimSpace(discard)
+	discard = strings.TrimSpace(strings.ToLower(discard))
 	makeCar = strings.TrimSpace(makeCar)
 	odometer = strings.TrimSpace(odometer)
 	price = strings.TrimSpace(price)
-	required = strings.TrimSpace(required)
+	required = strings.TrimSpace(strings.ToLower(required))
 	subs = strings.TrimSpace(subs)
 	subDomains = strings.TrimSpace(subDomains)
 	year = strings.TrimSpace(year)

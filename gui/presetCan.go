@@ -65,7 +65,13 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 			if err != nil {
 				o.l.Fatalln(err.Error())
 			}
-			o.canChan <- postCan(o, posts, preset.Owner, 0, 50, presetCan)
+			actual := make([]*types.Post, 0, len(posts))
+			for _, p := range posts {
+				if discardRequired(p, preset.Discard, preset.Required) {
+					actual = append(actual, p)
+				}
+			}
+			o.canChan <- postCan(o, actual, preset.Owner, 0, 50, presetCan)
 		}))
 		for k := range preset.Query {
 			switch k {
