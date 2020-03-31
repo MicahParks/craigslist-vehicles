@@ -14,6 +14,7 @@ import (
 )
 
 type orb struct {
+	current   fyne.Canvas
 	canChan   chan fyne.CanvasObject
 	death     chan struct{}
 	l         *log.Logger
@@ -30,7 +31,7 @@ type logWriter struct {
 }
 
 func (l logWriter) Write(p []byte) (int, error) {
-	l.w.SetText(l.w.Text + "\n" + string(p))
+	l.w.SetText(string(p) + "\n" + l.w.Text)
 	println(string(p))
 	return len(p), nil
 }
@@ -64,6 +65,7 @@ func main() {
 	}
 	a := app.New()
 	w := a.NewWindow("cars")
+	o.current = w.Canvas()
 	logs := widget.NewMultiLineEntry()
 	lW := &logWriter{w: logs}
 	l.SetOutput(lW)
@@ -82,6 +84,7 @@ func main() {
 			case can := <-o.canChan:
 				programTab.Content = can
 				con.Refresh()
+				o.current = w.Canvas()
 			}
 		}
 	}()

@@ -17,17 +17,16 @@ var (
 )
 
 func domainsCan(o *orb) *fyne.Container {
-	con := fyne.NewContainerWithLayout(layout.NewGridLayout(2))
+	con := fyne.NewContainerWithLayout(layout.NewGridLayout(1))
 	for k, v := range domains {
-		con.AddObject(widget.NewLabel(k))
 		domain := k
-		check := widget.NewCheck("", func(b bool) {
+		check := widget.NewCheck(domain, func(b bool) {
 			if v {
 				return
 			}
 			if !b {
 				for i := 0; i < len(o.user.Domains); i++ {
-					if o.user.Domains[i] == k {
+					if o.user.Domains[i] == domain {
 						o.user.Domains = append(o.user.Domains[:i], o.user.Domains[i+1:]...)
 						break
 					}

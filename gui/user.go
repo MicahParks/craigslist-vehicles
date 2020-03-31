@@ -17,6 +17,22 @@ var (
 	errUserExist = errors.New("user already exists")
 )
 
+func allUsernames(o *orb) ([]string, error) {
+	cursor, err := o.userCol.Find(context.TODO(), bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	user := make([]*types.User, 0)
+	if err = cursor.All(context.TODO(), &user); err != nil {
+		return nil, err
+	}
+	names := make([]string, 0)
+	for _, u := range user {
+		names = append(names, u.Username)
+	}
+	return names, nil
+}
+
 func authenticate(o *orb, password, username string) error {
 	user := &types.User{}
 	auth := map[string]string{"_id": username}

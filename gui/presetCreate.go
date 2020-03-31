@@ -94,8 +94,42 @@ func presetCreationCan(o *orb) *fyne.Container {
 	requiredBox.SetPlaceHolder("required1, required2")
 	requiredF := widget.NewFormItem("required", requiredBox)
 
-	subBox := widget.NewEntry()
-	subBox.SetPlaceHolder("username, username2")
+	shares := make([]string, 0)
+	subBox := widget.NewButton("share", func() {
+		usernames, err := allUsernames(o)
+		if err != nil {
+			o.l.Fatalln(err)
+		}
+		v := widget.NewVBox()
+		for _, u := range usernames {
+			name := u
+			check := widget.NewCheck(name, func(b bool) {
+				if b {
+					shares = append(shares, name)
+				} else {
+					for i := 0; i < len(shares); i++ {
+						if name == shares[i] {
+							shares = append(shares[:i], shares[i+1:]...)
+							break
+						}
+					}
+				}
+			})
+			if name == o.username {
+				check.Disable()
+			} else {
+				for _, s := range shares {
+					if u == s {
+						check.SetChecked(true)
+						break
+					}
+				}
+			}
+			v.Append(check)
+		}
+		widget.NewPopUp(v, o.current).Show()
+	})
+
 	subF := widget.NewFormItem("share", subBox)
 
 	subdomainBox := widget.NewEntry()
@@ -118,7 +152,7 @@ func presetCreationCan(o *orb) *fyne.Container {
 		}
 		if err = p.MakeQuery(o.username+strconv.Itoa(len(presets)), candidateCheck.Checked, candidateUse.Checked,
 			capPercentBox.Text, colorBox.Selected, discardBox.Text, linkCheck.Checked, linkUse.Checked,
-			makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text, subdomainBox.Text,
+			makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, shares, subdomainBox.Text,
 			yearBox.Text); err != nil {
 			o.l.Println(err.Error())
 			return

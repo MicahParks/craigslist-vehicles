@@ -8,7 +8,7 @@ import (
 )
 
 func (p *Preset) MakeQuery(id string, candidate, candidateUse bool, capPercent, color, discard string, link, linkUse bool, makeCar,
-	odometer, price, required, subs, subDomains, year string) error {
+	odometer, price, required string, shares []string, subDomains, year string) error {
 	p.Id = id
 	capPercent = strings.TrimSpace(capPercent)
 	color = strings.TrimSpace(color)
@@ -17,7 +17,6 @@ func (p *Preset) MakeQuery(id string, candidate, candidateUse bool, capPercent, 
 	odometer = strings.TrimSpace(odometer)
 	price = strings.TrimSpace(price)
 	required = strings.TrimSpace(strings.ToLower(required))
-	subs = strings.TrimSpace(subs)
 	subDomains = strings.TrimSpace(subDomains)
 	year = strings.TrimSpace(year)
 	var hold int
@@ -85,20 +84,7 @@ func (p *Preset) MakeQuery(id string, candidate, candidateUse bool, capPercent, 
 		}
 		p.Required = both
 	}
-	if len(subs) != 0 {
-		both := make([]string, 0, len(subs))
-		p.Subs = make([]string, 0, len(subs))
-		for _, sub := range strings.Split(subs, ",") {
-			sub = strings.TrimSpace(sub)
-			if len(sub) != 0 {
-				if sub == p.Owner {
-					continue
-				}
-				both = append(both, sub)
-			}
-		}
-		p.Subs = both
-	}
+	p.Subs = shares
 	if len(subDomains) != 0 {
 		both := make([]string, 0, len(subDomains))
 		p.SubDomains = make([]string, 0, len(subDomains))
