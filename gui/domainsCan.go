@@ -20,6 +20,7 @@ func domainsCan(o *orb) *fyne.Container {
 	con := fyne.NewContainerWithLayout(layout.NewGridLayout(2))
 	for k, v := range domains {
 		con.AddObject(widget.NewLabel(k))
+		domain := k
 		check := widget.NewCheck("", func(b bool) {
 			if v {
 				return
@@ -32,7 +33,7 @@ func domainsCan(o *orb) *fyne.Container {
 					}
 				}
 			} else {
-				o.user.Domains = append(o.user.Domains, k)
+				o.user.Domains = append(o.user.Domains, domain)
 			}
 			if err := updateDomains(o); err != nil {
 				o.l.Fatalln(err.Error())
