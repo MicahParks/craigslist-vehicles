@@ -43,25 +43,48 @@ func postCan(o *orb, posts []*types.Post, owner string, start, end int, backFun 
 	for _, box := range boxes {
 		con.AddObject(box)
 	}
-	info := widget.NewLabel(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, len(posts)))
+	max := len(posts)
+	dis := 0
+	if end > max {
+		dis = max
+	} else {
+		dis = end
+	}
+	dat := start
+	if start == 0 {
+		dat = 1
+	}
+	info := widget.NewLabel(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, dat, dis, max))
 	left := widget.NewButton("<", func() {
+		if end-50 <= 0 {
+			return
+		}
 		start = start - 50
 		end = end - 50
-		if start < 0 {
-			start = 0
+		if start < 1 {
+			start = 1
 			end = 50
 		}
-		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, len(posts)-1))
+		if end > max {
+			end = max
+		}
+		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d    (list starts at 0)", owner, start, end, max))
 		o.canChan <- postCan(o, posts, owner, start, end, backFun)
 	})
 	right := widget.NewButton(">", func() {
+		if start+50 >= max {
+			return
+		}
 		start = start + 50
 		end = end + 50
-		if end-1 > len(posts) {
-			end = len(posts) - 1
-			start = end - 1
+		if end > max {
+			end = max
+			start = end - 49
 		}
-		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, len(posts)-1))
+		if start < 1 {
+			start = 1
+		}
+		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, max))
 		o.canChan <- postCan(o, posts, owner, start, end, backFun)
 	})
 	topH := widget.NewVBox(info, header)

@@ -61,5 +61,8 @@ func listCan(o *orb) *fyne.Container {
 		o.canChan <- listCan(o)
 	}))
 	v := widget.NewVBox(con, h)
-	return fyne.NewContainerWithLayout(layout.NewMaxLayout(), v)
+	back := widget.NewButton("back", func() {
+		o.canChan <- homeCan(o)
+	})
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, back, nil, nil), back, v)
 }
