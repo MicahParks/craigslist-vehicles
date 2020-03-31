@@ -100,7 +100,6 @@ func main() {
 		c.OnHTML("section.body", func(e *colly.HTMLElement) {
 			// Post page.
 			url := e.Request.URL.String()
-			var post *types.Post
 			mux.Lock()
 			post, ok := postUrl[url]
 			if !ok {
@@ -111,7 +110,7 @@ func main() {
 			}
 			mux.Unlock()
 			m := &types.Marsh{}
-			if err := e.Unmarshal(m); err != nil {
+			if err = e.Unmarshal(m); err != nil {
 				l.Fatalln(err.Error())
 			}
 			wg.Add(1)
@@ -134,7 +133,7 @@ func main() {
 				post.Subdomain = subdomain
 			}()
 		})
-		if err := c.Visit(start); err != nil {
+		if err = c.Visit(start); err != nil {
 			l.Fatalln(err.Error())
 		}
 		wg.Wait()
@@ -154,7 +153,7 @@ func main() {
 		if err = f.Close(); err != nil {
 			l.Fatalln(err.Error())
 		}
-		if err := mongodb.InsertPosts(collection, posts); err != nil {
+		if err = mongodb.InsertPosts(collection, posts); err != nil {
 			l.Fatalln(err.Error())
 		}
 	}
