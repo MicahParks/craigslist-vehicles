@@ -7,8 +7,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (p *Preset) MakeQuery(candidate, candidateUse bool, capPercent, color, discard string, link, linkUse bool, makeCar,
+func (p *Preset) MakeQuery(id string, candidate, candidateUse bool, capPercent, color, discard string, link, linkUse bool, makeCar,
 	odometer, price, required, subs, subDomains, year string) error {
+	p.Id = id
 	capPercent = strings.TrimSpace(capPercent)
 	color = strings.TrimSpace(color)
 	discard = strings.TrimSpace(strings.ToLower(discard))

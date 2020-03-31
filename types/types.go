@@ -41,6 +41,7 @@ type Post struct {
 }
 
 type Preset struct {
+	Id       string `bson:"_id"`
 	Everyone bool
 	Owner    string
 	Subs     []string

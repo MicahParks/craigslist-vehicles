@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"strings"
 
 	"fyne.io/fyne"
@@ -111,14 +112,19 @@ func presetCreationCan(o *orb) *fyne.Container {
 	yearF := widget.NewFormItem("made after", yearBox)
 
 	submit := widget.NewButton("create", func() {
-		if err := p.MakeQuery(candidateCheck.Checked, candidateUse.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text,
-			linkCheck.Checked, linkUse.Checked, makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text,
-			subdomainBox.Text, yearBox.Text); err != nil {
+		presets, _, err := myPresets(o)
+		if err != nil {
+			o.l.Fatalln(err.Error())
+		}
+		if err = p.MakeQuery(o.username+strconv.Itoa(len(presets)), candidateCheck.Checked, candidateUse.Checked,
+			capPercentBox.Text, colorBox.Selected, discardBox.Text, linkCheck.Checked, linkUse.Checked,
+			makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, subBox.Text, subdomainBox.Text,
+			yearBox.Text); err != nil {
 			o.l.Println(err.Error())
 			return
 		}
 		p.Owner = o.username
-		if err := insertPreset(o, p); err != nil {
+		if err = insertPreset(o, p); err != nil {
 			o.l.Fatalln(err.Error())
 		}
 		posts, err := getPosts(o, p.Query)

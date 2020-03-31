@@ -29,7 +29,7 @@ func presetCan(o *orb) *fyne.Container {
 
 func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 	header := fyne.NewContainerWithLayout(layout.NewGridLayout(12),
-		widget.NewLabel("use"),
+		widget.NewLabel("use/del"),
 		widget.NewLabel("candidate"),
 		widget.NewLabel("capitalization"),
 		widget.NewLabel("color"),
@@ -60,7 +60,8 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		} else if o.username == preset.Owner {
 			con = mineCon
 		}
-		con.AddObject(widget.NewButton("use", func() {
+		h := widget.NewHBox()
+		h.Append(widget.NewButton("use", func() {
 			posts, err := getPosts(o, preset.Query)
 			if err != nil {
 				o.l.Fatalln(err.Error())
@@ -73,6 +74,13 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 			}
 			o.canChan <- postCan(o, actual, preset.Owner, 0, 50, presetCan)
 		}))
+		h.Append(widget.NewButton("del", func() {
+			if err := deletePreset(o, preset.Id); err != nil {
+				o.l.Fatalln(err.Error())
+			}
+			o.canChan <- presetCan(o)
+		}))
+		con.AddObject(h)
 		for k := range preset.Query {
 			switch k {
 			case "candidate":

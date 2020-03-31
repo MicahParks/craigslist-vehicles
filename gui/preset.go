@@ -9,6 +9,13 @@ import (
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
+func deletePreset(o *orb, id string) error {
+	if res := o.presetCol.FindOneAndDelete(context.TODO(), map[string]string{"_id": id}); res.Err() != nil {
+		return res.Err()
+	}
+	return nil
+}
+
 func insertPreset(o *orb, preset *types.Preset, opts ...*options.InsertOneOptions) error {
 	_, err := o.presetCol.InsertOne(context.TODO(), preset, opts...)
 	if err != nil {
