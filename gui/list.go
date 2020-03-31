@@ -57,6 +57,12 @@ func myLists(o *orb) (mine, shared []*types.List, err error) {
 	if err = cursor.All(context.TODO(), &shared); err != nil {
 		return nil, nil, err
 	}
+	if mine == nil {
+		mine = make([]*types.List, 0)
+	}
+	if shared == nil {
+		shared = make([]*types.List, 0)
+	}
 	return mine, shared, nil
 }
 
