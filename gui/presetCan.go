@@ -28,7 +28,7 @@ func presetCan(o *orb) *fyne.Container {
 }
 
 func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
-	header := fyne.NewContainerWithLayout(layout.NewGridLayout(11),
+	header := fyne.NewContainerWithLayout(layout.NewGridLayout(12),
 		widget.NewLabel("use"),
 		widget.NewLabel("candidate"),
 		widget.NewLabel("capitalization"),
@@ -40,20 +40,20 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		widget.NewLabel("price"),
 		widget.NewLabel("required"),
 		widget.NewLabel("subdomains"),
+		widget.NewLabel("year"),
 	)
 	// TODO Build vCon from preset.Query.
-	everyoneCon := fyne.NewContainerWithLayout(layout.NewGridLayout(11))
+	everyoneCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
 	everyoneBox := widget.NewGroup("default", everyoneCon)
-	mineCon := fyne.NewContainerWithLayout(layout.NewGridLayout(11))
+	mineCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
 	mineBox := widget.NewGroup("mine", mineCon)
-	sharedCon := fyne.NewContainerWithLayout(layout.NewGridLayout(11))
+	sharedCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
 	sharedBox := widget.NewGroup("shared with me", sharedCon)
 	vCon := widget.NewVBox(everyoneBox, mineBox, sharedBox)
 	var con *fyne.Container
 	for _, preset := range append(owner, sub...) {
-		presetLabel := make([]*widget.Label, 10)
+		presetLabel := make([]*widget.Label, 11)
 		suffix := ",\n"
-		discards := ""
 		con = sharedCon
 		if preset.Everyone {
 			con = everyoneCon
@@ -67,59 +67,47 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 			}
 			o.canChan <- postCan(o, posts, preset.Owner, 0, 50, presetCan)
 		}))
-		for k, v := range preset.Query {
+		for k := range preset.Query {
 			switch k {
 			case "candidate":
-				a := v.(bool)
-				presetLabel[0] = widget.NewLabel(strconv.Itoa(a))
+				presetLabel[0] = widget.NewLabel(strconv.FormatBool(preset.Candidate))
 			case "cappercent":
-				a := v.(int)
-				presetLabel[1] = widget.NewLabel(strconv.Itoa(a))
+				presetLabel[1] = widget.NewLabel(strconv.Itoa(preset.CapPercent))
 			case "color":
-				a := v.(string)
-				presetLabel[2] = widget.NewLabel(a)
-			case "discard":
-				a := v.([]string)
-				for _, d := range a {
-					discards += d + suffix
-				}
-				discards = strings.TrimSuffix(discards, suffix)
-				presetLabel[3] = widget.NewLabel(discards)
+				presetLabel[2] = widget.NewLabel(preset.Color)
 			case "link":
-				a := v.(bool)
-				widget.NewLabel(strconv.FormatBool(a))
+				presetLabel[4] = widget.NewLabel(strconv.FormatBool(preset.Link))
 			case "make":
-				a := v.(string)
-				presetLabel[4] = widget.NewLabel(a)
+				presetLabel[5] = widget.NewLabel(preset.Make)
 			case "odometer":
-				a := v.(int)
-				presetLabel[5] = widget.NewLabel(strconv.Itoa(a))
+				presetLabel[6] = widget.NewLabel(strconv.Itoa(preset.Odometer))
 			case "price":
-				a := v.(int)
-				presetLabel[6] = widget.NewLabel(strconv.Itoa(a))
-			case "required":
-				a := v.([]string)
-				require := ""
-				for _, r := range a {
-					require += r + suffix
-				}
-				require = strings.TrimSuffix(require, suffix)
-				presetLabel[7] = widget.NewLabel(require)
-			case "subdomains":
-				a := v.([]string)
+				presetLabel[7] = widget.NewLabel(strconv.Itoa(preset.Price))
+			case "subdomain":
 				subdomains := ""
-				for _, s := range a {
+				for _, s := range preset.SubDomains {
 					subdomains += s + suffix
 				}
 				subdomains = strings.TrimSuffix(subdomains, suffix)
-				presetLabel[8] = widget.NewLabel(subdomains)
+				presetLabel[9] = widget.NewLabel(subdomains)
 			case "year":
-				a := v.(int)
-				presetLabel[9] = widget.NewLabel(strconv.Itoa(a))
+				presetLabel[10] = widget.NewLabel(strconv.Itoa(preset.Year))
 			default:
-				o.l.Fatalln(errors.New("unexpected key in preset query"))
+				o.l.Fatalln(errors.New("unexpected key in preset query: " + k))
 			}
 		}
+		discards := ""
+		for _, d := range preset.Discard {
+			discards += d + suffix
+		}
+		discards = strings.TrimSuffix(discards, suffix)
+		presetLabel[3] = widget.NewLabel(discards)
+		require := ""
+		for _, r := range preset.Required {
+			require += r + suffix
+		}
+		require = strings.TrimSuffix(require, suffix)
+		presetLabel[8] = widget.NewLabel(require)
 		for _, v := range presetLabel {
 			if v == nil {
 				v = widget.NewLabel("")

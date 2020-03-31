@@ -21,103 +21,102 @@ func (p *Preset) MakeQuery(candidate, candidateUse bool, capPercent, color, disc
 	year = strings.TrimSpace(year)
 	var hold int
 	var err error
-	post := &Post{}
 	query := bson.M{}
 	if candidateUse {
 		query["candidate"] = candidate
 		p.Candidate = candidate
-		post.Candidate = candidate
 	}
 	if len(capPercent) != 0 {
 		hold, err = strconv.Atoi(capPercent)
 		if err != nil {
 			return err
 		}
-		// TODO Add this to the query.
+		query["cappercent"] = bson.M{"$lte": hold}
 		p.CapPercent = hold
-		post.CapPercent = hold
 	}
 	if len(color) != 0 {
 		query["color"] = color
 		p.Color = color
-		post.Color = color
 	}
 	if len(discard) != 0 {
-		p.Discard = make([]string, 0)
+		both := make([]string, 0, len(discard))
+		p.Discard = make([]string, 0, len(discard))
 		for _, dis := range strings.Split(discard, ",") {
 			dis = strings.TrimSpace(dis)
 			if len(dis) != 0 {
-				p.Discard = append(p.Subs, strings.TrimSpace(dis))
+				both = append(both, dis)
 			}
 		}
+		p.Discard = both
 	}
 	if linkUse {
 		query["link"] = link
 		p.Link = link
-		post.Link = link
 	}
 	if len(makeCar) != 0 {
 		query["make"] = makeCar
 		p.Make = makeCar
-		post.Make = makeCar
 	}
 	if len(odometer) != 0 {
 		hold, err = strconv.Atoi(odometer)
 		if err != nil {
 			return err
 		}
-		// TODO Add this to the query.
+		query["odometer"] = bson.M{"$lte": hold}
 		p.Odometer = hold
-		post.Odometer = hold
 	}
 	if len(price) != 0 {
 		hold, err = strconv.Atoi(price)
 		if err != nil {
 			return err
 		}
-		// TODO Add this to the query.
+		query["price"] = bson.M{"$lte": hold}
 		p.Price = hold
-		post.Price = hold
 	}
 	if len(required) != 0 {
-		p.Required = make([]string, 0)
+		both := make([]string, 0, len(required))
+		p.Required = make([]string, 0, len(required))
 		for _, req := range strings.Split(required, ",") {
 			req = strings.TrimSpace(req)
 			if len(req) != 0 {
-				p.Required = append(p.Required, strings.TrimSpace(req))
+				both = append(both, req)
 			}
 		}
+		p.Required = both
 	}
 	if len(subs) != 0 {
-		p.Subs = make([]string, 0)
+		both := make([]string, 0, len(subs))
+		p.Subs = make([]string, 0, len(subs))
 		for _, sub := range strings.Split(subs, ",") {
 			sub = strings.TrimSpace(sub)
 			if len(sub) != 0 {
 				if sub == p.Owner {
 					continue
 				}
-				p.Subs = append(p.Subs, sub)
+				both = append(both, sub)
 			}
 		}
+		p.Subs = both
 	}
 	if len(subDomains) != 0 {
-		p.SubDomains = make([]string, 0)
+		both := make([]string, 0, len(subDomains))
+		p.SubDomains = make([]string, 0, len(subDomains))
 		for _, subD := range strings.Split(subDomains, ",") {
 			subD = strings.TrimSpace(subD)
 			if len(subD) != 0 {
-				p.SubDomains = append(p.SubDomains, subD)
+				both = append(both, subD)
 			}
 		}
-		// TODO Add this to the query.
+		query["subdomain"] = bson.M{"$in": both}
+		p.SubDomains = both
 	}
 	if len(year) != 0 {
 		hold, err = strconv.Atoi(year)
 		if err != nil {
 			return err
 		}
-		// TODO Add this to the query.
+		query["year"] = bson.M{"$gte": year}
 		p.Year = hold
-		post.Year = hold
 	}
 	p.Query = query
 	return nil

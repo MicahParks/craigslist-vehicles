@@ -96,7 +96,6 @@ func main() {
 		if !ok {
 			post = &types.Post{
 				AttrGroup: make(map[string]string),
-				Subdomain: make([]string, 0, 1),
 			}
 			postUrl[url] = post
 		}
@@ -122,7 +121,7 @@ func main() {
 			post.GetHasLink(titleBody)
 			post.GetYear(titleBody)
 			post.Url = url
-			post.Subdomain = append(post.Subdomain, subdomain)
+			post.Subdomain = subdomain
 		}()
 	})
 	if err := c.Visit(start); err != nil {

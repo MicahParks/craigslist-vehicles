@@ -32,7 +32,7 @@ type Post struct {
 	Make       string
 	Odometer   int
 	Price      int
-	Subdomain  []string
+	Subdomain  string
 	Text       string
 	Title      string
 	Url        string `bson:"_id"`
