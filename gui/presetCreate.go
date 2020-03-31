@@ -125,7 +125,13 @@ func presetCreationCan(o *orb) *fyne.Container {
 		if err != nil {
 			o.l.Fatalln(err.Error())
 		}
-		o.canChan <- postCan(o, posts, p.Owner, 0, 50, presetCan)
+		actual := make([]*types.Post, 0, len(posts))
+		for _, post := range posts {
+			if discardRequired(post, p.Discard, p.Required) {
+				actual = append(actual, post)
+			}
+		}
+		o.canChan <- postCan(o, actual, p.Owner, 0, 50, presetCan)
 	})
 	submitF := widget.NewFormItem("create", submit)
 	form := widget.NewForm(candidateF, capPercentF, colorF, discardF, linkF, makeF, odoF, priceF, requiredF, subF,
