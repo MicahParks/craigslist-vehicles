@@ -79,6 +79,8 @@ func newUser(o *orb, password, username string) error {
 		if _, err = o.userCol.InsertOne(context.TODO(), user); err != nil {
 			return err
 		}
+		o.username = user.Username
+		o.user = user
 		o.l.Printf("user %s created", user.Username)
 		return nil
 	}

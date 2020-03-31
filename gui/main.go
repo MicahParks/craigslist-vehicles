@@ -1,10 +1,8 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
@@ -13,10 +11,6 @@ import (
 
 	"gitlab.com/MicahParks/cano-cars/mongodb"
 	"gitlab.com/MicahParks/cano-cars/types"
-)
-
-const (
-	diskAsset = "carsLogin.username"
 )
 
 type orb struct {
@@ -43,16 +37,6 @@ func (l logWriter) Write(p []byte) (int, error) {
 
 func main() {
 	l := log.New(os.Stdout, "", log.LstdFlags|log.LUTC|log.Lshortfile)
-	canLogin := true
-	username := ""
-	if userB, err := ioutil.ReadFile(diskAsset); err != nil {
-		if !os.IsNotExist(err) {
-			l.Fatalln(err.Error())
-		}
-		canLogin = true // TODO Make false.
-	} else {
-		username = strings.TrimSpace(string(userB))
-	}
 	listCol, err := mongodb.Init("List")
 	if err != nil {
 		l.Fatalln(err.Error())
@@ -77,7 +61,6 @@ func main() {
 		postsCol:  postsCol,
 		presetCol: presetCol,
 		userCol:   userCol,
-		username:  username,
 	}
 	a := app.New()
 	w := a.NewWindow("cars")
@@ -88,11 +71,7 @@ func main() {
 	scrollTab := widget.NewTabItem("logs", widget.NewScrollContainer(logs))
 	programTab := widget.NewTabItem("program", widget.NewLabel(""))
 	con := widget.NewTabContainer(programTab, scrollTab)
-	if canLogin {
-		programTab.Content = loginCan(o)
-	} else {
-		programTab.Content = registerCan(o)
-	}
+	programTab.Content = loginCan(o)
 	w.SetContent(con)
 	go func() {
 		for {
