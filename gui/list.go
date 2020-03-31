@@ -14,6 +14,12 @@ var (
 	errListExists = errors.New("list already exists")
 )
 
+func deleteList(o *orb, id string) error {
+	if res := o.listCol.FindOneAndDelete(context.TODO(), map[string]string{"_id": id}); res.Err() != nil {
+		return res.Err()
+	}
+}
+
 func getList(o *orb, name string) (*types.List, error) {
 	exist := map[string]string{"owner": o.username, "name": name}
 	cursor, err := o.listCol.Find(context.TODO(), exist)
@@ -27,19 +33,29 @@ func getList(o *orb, name string) (*types.List, error) {
 	return list[0], nil
 }
 
-func myLists(o *orb) ([]*types.List, error) {
+func myLists(o *orb) (own, shared []*types.List, err error) {
 	lists := make([]*types.List, 0)
 	ownQuery := bson.M{
 		"owner": o.username,
 	}
 	cursor, err := o.listCol.Find(context.TODO(), ownQuery)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if err = cursor.All(context.TODO(), &lists); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return lists, nil
+	sharedQuery := bson.D{
+		{"subs", o.username},
+	}
+	cursor, err = o.presetCol.Find(context.TODO(), sharedQuery)
+	if err != nil {
+		return nil, nil, err
+	}
+	if err = cursor.All(context.TODO(), &shared); err != nil {
+		return nil, nil, err
+	}
+	return own, shared, nil
 }
 
 func newList(o *orb, name string) (*types.List, error) {

@@ -10,7 +10,7 @@ import (
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
-func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) *fyne.Container {
+func postCan(o *orb, posts []*types.Post, owner string, start, end int) *fyne.Container {
 	header := fyne.NewContainerWithLayout(layout.NewGridLayout(9),
 		widget.NewLabel("link"),
 		widget.NewLabel("price"),
@@ -29,7 +29,7 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 			if err := pR.make(o); err != nil {
 				o.l.Fatalln(err.Error())
 			}
-			pR.append(o, boxes, posts, preset, start, end)
+			pR.append(o, boxes, posts, owner, start, end)
 		}
 		if i >= end {
 			break
@@ -43,7 +43,7 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 	for _, box := range boxes {
 		con.AddObject(box)
 	}
-	info := widget.NewLabel(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)))
+	info := widget.NewLabel(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, len(posts)))
 	left := widget.NewButton("<", func() {
 		start = start - 50
 		end = end - 50
@@ -51,8 +51,8 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 			start = 0
 			end = 50
 		}
-		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)-1))
-		o.canChan <- postCan(o, posts, preset, start, end)
+		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, len(posts)-1))
+		o.canChan <- postCan(o, posts, owner, start, end)
 	})
 	right := widget.NewButton(">", func() {
 		start = start + 50
@@ -61,8 +61,8 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 			end = len(posts) - 1
 			start = end - 1
 		}
-		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", preset.Owner, start, end, len(posts)-1))
-		o.canChan <- postCan(o, posts, preset, start, end)
+		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, len(posts)-1))
+		o.canChan <- postCan(o, posts, owner, start, end)
 	})
 	topH := widget.NewVBox(info, header)
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(topH, back, left, right), topH, back, left, right, scroll)

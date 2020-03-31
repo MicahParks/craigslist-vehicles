@@ -1,7 +1,6 @@
 package main
 
 import (
-	"reflect"
 	"strconv"
 	"strings"
 
@@ -36,20 +35,6 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 		widget.NewLabel("subdomains"),
 	)
 	// TODO Build vCon from preset.Query.
-	all := make([]*types.Preset, 0, len(owner)+len(sub))
-	add := true
-	for _, preset := range append(owner, sub...) {
-		add = true
-		for _, preset2 := range all {
-			if reflect.DeepEqual(preset.Query, preset2.Query) {
-				add = false
-				break
-			}
-		}
-		if add {
-			all = append(all, preset)
-		}
-	}
 	everyoneCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
 	everyoneBox := widget.NewGroup("default", everyoneCon)
 	mineCon := fyne.NewContainerWithLayout(layout.NewGridLayout(12))
@@ -58,7 +43,7 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 	sharedBox := widget.NewGroup("shared with me", sharedCon)
 	vCon := widget.NewVBox(everyoneBox, mineBox, sharedBox)
 	var con *fyne.Container
-	for _, preset := range all {
+	for _, preset := range append(owner, sub...) {
 		suffix := ",\n"
 		discards := ""
 		for _, d := range preset.Discard {
@@ -91,7 +76,7 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 			if err != nil {
 				o.l.Fatalln(err.Error())
 			}
-			o.canChan <- postCan(o, posts, preset, 0, 50)
+			o.canChan <- postCan(o, posts, preset.Owner, 0, 50)
 		}))
 		con.AddObject(widget.NewLabel(strconv.FormatBool(preset.Candidate)))
 		con.AddObject(widget.NewLabel(strconv.Itoa(preset.CapPercent)))

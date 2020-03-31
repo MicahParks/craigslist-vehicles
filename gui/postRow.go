@@ -35,7 +35,7 @@ func rowVBoxes() []*widget.Box {
 	return []*widget.Box{urlBox, priceBox, makeBox, odoBox, yearBox, colorBox, linkBox, candidateBox, listBox}
 }
 
-func (p *postRow) append(o *orb, boxes []*widget.Box, posts []*types.Post, preset *types.Preset, start, end int) {
+func (p *postRow) append(o *orb, boxes []*widget.Box, posts []*types.Post, owner string, start, end int) {
 	boxes[0].Append(p.urlBox)
 	boxes[1].Append(p.priceBox)
 	boxes[2].Append(p.makeBox)
@@ -45,7 +45,7 @@ func (p *postRow) append(o *orb, boxes []*widget.Box, posts []*types.Post, prese
 	boxes[6].Append(p.linkBox)
 	boxes[7].Append(p.candidateBox)
 	boxes[8].Append(widget.NewButton("add", func() {
-		o.canChan <- listAdd(o, p.post, posts, preset, start, end)
+		o.canChan <- listAdd(o, p.post, posts, owner, start, end)
 	}))
 }
 

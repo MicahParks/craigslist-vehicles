@@ -6,8 +6,8 @@ import (
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
-func listAdd(o *orb, post *types.Post, posts []*types.Post, preset *types.Preset, start, end int) *widget.Form {
-	lists, err := myLists(o)
+func listAdd(o *orb, post *types.Post, posts []*types.Post, owner string, start, end int) *widget.Form {
+	lists, _, err := myLists(o)
 	if err != nil {
 		o.l.Fatalln(err.Error())
 	}
@@ -19,7 +19,7 @@ func listAdd(o *orb, post *types.Post, posts []*types.Post, preset *types.Preset
 		lists = []*types.List{l}
 	}
 	form := widget.NewForm()
-	back := postCan(o, posts, preset, start, end)
+	back := postCan(o, posts, owner, start, end)
 	for _, l := range lists {
 		form.Append(l.Name, widget.NewButton("add", func() {
 			for _, p := range l.Posts {

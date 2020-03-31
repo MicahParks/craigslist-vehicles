@@ -93,6 +93,9 @@ func (p *Preset) MakeQuery(candidate, candidateUse bool, capPercent, color, disc
 		for _, sub := range strings.Split(subs, ",") {
 			sub = strings.TrimSpace(sub)
 			if len(sub) != 0 {
+				if sub == p.Owner {
+					continue
+				}
 				p.Subs = append(p.Subs, sub)
 			}
 		}
