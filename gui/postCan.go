@@ -11,7 +11,7 @@ import (
 )
 
 func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) *fyne.Container {
-	header := fyne.NewContainerWithLayout(layout.NewGridLayout(8),
+	header := fyne.NewContainerWithLayout(layout.NewGridLayout(9),
 		widget.NewLabel("link"),
 		widget.NewLabel("price"),
 		widget.NewLabel("make"),
@@ -20,6 +20,7 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 		widget.NewLabel("color"),
 		widget.NewLabel("has link"),
 		widget.NewLabel("candidate"),
+		widget.NewLabel("list"),
 	)
 	boxes := rowVBoxes()
 	for i, post := range posts {
@@ -28,7 +29,7 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 			if err := pR.make(o); err != nil {
 				o.l.Fatalln(err.Error())
 			}
-			pR.append(boxes)
+			pR.append(o, boxes)
 		}
 		if i >= end {
 			break
@@ -37,7 +38,7 @@ func postCan(o *orb, posts []*types.Post, preset *types.Preset, start, end int) 
 	back := widget.NewButton("back", func() {
 		o.canChan <- presetCan(o)
 	})
-	con := fyne.NewContainerWithLayout(layout.NewGridLayout(8))
+	con := fyne.NewContainerWithLayout(layout.NewGridLayout(9))
 	scroll := widget.NewScrollContainer(con)
 	for _, box := range boxes {
 		con.AddObject(box)

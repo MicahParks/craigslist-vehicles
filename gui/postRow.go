@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"fyne.io/fyne"
 	"fyne.io/fyne/widget"
 
 	"gitlab.com/MicahParks/cano-cars/types"
@@ -31,10 +32,11 @@ func rowVBoxes() []*widget.Box {
 	colorBox := widget.NewVBox()
 	linkBox := widget.NewVBox()
 	candidateBox := widget.NewVBox()
-	return []*widget.Box{urlBox, priceBox, makeBox, odoBox, yearBox, colorBox, linkBox, candidateBox}
+	listBox := widget.NewVBox()
+	return []*widget.Box{urlBox, priceBox, makeBox, odoBox, yearBox, colorBox, linkBox, candidateBox, listBox}
 }
 
-func (p *postRow) append(boxes []*widget.Box) {
+func (p *postRow) append(o *orb, boxes []*widget.Box) {
 	boxes[0].Append(p.urlBox)
 	boxes[1].Append(p.priceBox)
 	boxes[2].Append(p.makeBox)
@@ -43,6 +45,9 @@ func (p *postRow) append(boxes []*widget.Box) {
 	boxes[5].Append(p.colorBox)
 	boxes[6].Append(p.linkBox)
 	boxes[7].Append(p.candidateBox)
+	boxes[8].Append(widget.NewButton("add", func() {
+		o.canChan <- listAdd(o, p.post)
+	}))
 }
 
 func (p *postRow) attrBox() *widget.Form {

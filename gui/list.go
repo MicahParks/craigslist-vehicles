@@ -28,18 +28,18 @@ func getList(o *orb, name string) (*types.List, error) {
 }
 
 func myLists(o *orb) ([]*types.List, error) {
-	own := make([]*types.List, 0)
+	lists := make([]*types.List, 0)
 	ownQuery := bson.M{
 		"owner": o.username,
 	}
-	cursor, err := o.presetCol.Find(context.TODO(), ownQuery)
+	cursor, err := o.listCol.Find(context.TODO(), ownQuery)
 	if err != nil {
 		return nil, err
 	}
-	if err = cursor.All(context.TODO(), &own); err != nil {
+	if err = cursor.All(context.TODO(), &lists); err != nil {
 		return nil, err
 	}
-	return own, nil
+	return lists, nil
 }
 
 func newList(o *orb, name string) (*types.List, error) {
@@ -56,15 +56,9 @@ func newList(o *orb, name string) (*types.List, error) {
 
 func updateList(o *orb, listId string, list *types.List) error {
 	update := bson.M{"_id": listId}
-	res, err := o.listCol.UpdateOne(context.TODO(), update, list)
-	if err != nil {
-		return err
-	}
-	if res.MatchedCount == 0 {
-		return errors.New("list not found")
-	}
-	if res.UpsertedCount == 0 {
-		return errors.New("created a new list instead of updating")
+	res := o.listCol.FindOneAndReplace(context.TODO(), update, list)
+	if res.Err() != nil {
+		return res.Err()
 	}
 	return nil
 }

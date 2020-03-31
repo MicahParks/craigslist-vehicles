@@ -7,7 +7,7 @@ import (
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
-func listAdd(o *orb, post *types.Post, back fyne.CanvasObject) {
+func listAdd(o *orb, post *types.Post, back fyne.CanvasObject) *widget.Form {
 	lists, err := myLists(o)
 	if err != nil {
 		o.l.Fatalln(err.Error())
@@ -35,5 +35,5 @@ func listAdd(o *orb, post *types.Post, back fyne.CanvasObject) {
 			o.canChan <- back
 		}))
 	}
-
+	return form
 }
