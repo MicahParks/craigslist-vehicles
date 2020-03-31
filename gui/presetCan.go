@@ -76,7 +76,7 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 			if err != nil {
 				o.l.Fatalln(err.Error())
 			}
-			o.canChan <- postCan(o, posts, preset.Owner, 0, 50)
+			o.canChan <- postCan(o, posts, preset.Owner, 0, 50, presetCan)
 		}))
 		con.AddObject(widget.NewLabel(strconv.FormatBool(preset.Candidate)))
 		con.AddObject(widget.NewLabel(strconv.Itoa(preset.CapPercent)))

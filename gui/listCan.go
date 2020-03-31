@@ -21,7 +21,7 @@ func listCan(o *orb) *fyne.Container {
 		}
 		con.AddObject(widget.NewLabel(list.Name))
 		con.AddObject(widget.NewButton("view", func() {
-			o.canChan <- postCan(o, posts, list.Owner, 0, 50)
+			o.canChan <- postCan(o, posts, list.Owner, 0, 50, listCan)
 		}))
 		del := widget.NewButton("delete", func() {
 			if err = deleteList(o, list.Id); err != nil {

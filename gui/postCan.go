@@ -10,7 +10,7 @@ import (
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
-func postCan(o *orb, posts []*types.Post, owner string, start, end int) *fyne.Container {
+func postCan(o *orb, posts []*types.Post, owner string, start, end int, backFun func(*orb) *fyne.Container) *fyne.Container {
 	header := fyne.NewContainerWithLayout(layout.NewGridLayout(9),
 		widget.NewLabel("link"),
 		widget.NewLabel("price"),
@@ -36,7 +36,7 @@ func postCan(o *orb, posts []*types.Post, owner string, start, end int) *fyne.Co
 		}
 	}
 	back := widget.NewButton("back", func() {
-		o.canChan <- presetCan(o)
+		o.canChan <- backFun(o)
 	})
 	con := fyne.NewContainerWithLayout(layout.NewGridLayout(9))
 	scroll := widget.NewScrollContainer(con)
@@ -52,7 +52,7 @@ func postCan(o *orb, posts []*types.Post, owner string, start, end int) *fyne.Co
 			end = 50
 		}
 		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, len(posts)-1))
-		o.canChan <- postCan(o, posts, owner, start, end)
+		o.canChan <- postCan(o, posts, owner, start, end, backFun)
 	})
 	right := widget.NewButton(">", func() {
 		start = start + 50
@@ -62,7 +62,7 @@ func postCan(o *orb, posts []*types.Post, owner string, start, end int) *fyne.Co
 			start = end - 1
 		}
 		info.SetText(fmt.Sprintf("Owner: %s    Viewing %d - %d of %d", owner, start, end, len(posts)-1))
-		o.canChan <- postCan(o, posts, owner, start, end)
+		o.canChan <- postCan(o, posts, owner, start, end, backFun)
 	})
 	topH := widget.NewVBox(info, header)
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(topH, back, left, right), topH, back, left, right, scroll)
