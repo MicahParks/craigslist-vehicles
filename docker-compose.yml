@@ -1,14 +1,19 @@
 version: '3.1'
 services:
-  mongo:
+  some-db:
+    container_name: some-db
     image: mongo
-    restart: always
     ports:
-      - 27777:27017
+      - 9000:27017
     volumes:
-      - ./volume:/data/db
+      - craigslist-vehicles:/data/db
   mongo-express:
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: 'root'
+      ME_CONFIG_BASICAUTH_PASSWORD: 'llWgN>.BRiaX7r@w]Bs=N$4z'
     image: mongo-express
     ports:
-      - 27778:8081
+      - 8080:8081
     restart: always
+volumes:
+  craigslist-vehicles:
