@@ -1,6 +1,7 @@
 version: '3.1'
 services:
   mongo-cv:
+    command: "mongod --auth"
     container_name: mongo-cv
     image: mongo
     ports:
