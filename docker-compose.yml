@@ -10,7 +10,7 @@ services:
   mongo-express:
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: 'root'
-      ME_CONFIG_BASICAUTH_PASSWORD: 'llWgN>.BRiaX7r@w]Bs=N$4z'
+      ME_CONFIG_BASICAUTH_PASSWORD: 'llWgNBRiaX7rwBsN4z'
     image: mongo-express
     ports:
       - 8080:8081
