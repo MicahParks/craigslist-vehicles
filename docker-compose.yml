@@ -12,6 +12,9 @@ services:
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: 'root'
       ME_CONFIG_BASICAUTH_PASSWORD: 'llWgNBRiaX7rwBsN4z'
+      ME_CONFIG_MONGODB_ADMINUSERNAME: 'root'
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 'FDKK8IyFwcET12DDkI1'
+      ME_CONFIG_MONGODB_SERVER: mongo-cv
     image: mongo-express
     ports:
       - 8080:8081
