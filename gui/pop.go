@@ -14,6 +14,11 @@ func userPop(o *orb, shares *[]string, callbacks ...func()) *widget.PopUp {
 		name := u
 		check := widget.NewCheck(name, func(b bool) {
 			if b {
+				for _, s := range *shares {
+					if s == name {
+						return
+					}
+				}
 				*shares = append(*shares, name)
 			} else {
 				for i := 0; i < len(*shares); i++ {

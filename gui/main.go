@@ -13,6 +13,8 @@ import (
 	"gitlab.com/MicahParks/cano-cars/types"
 )
 
+// TODO List's don't unshare.
+
 type orb struct {
 	current   fyne.Canvas
 	canChan   chan fyne.CanvasObject

@@ -44,6 +44,9 @@ func listCan(o *orb) *fyne.Container {
 					}
 				}).Show() // Lol the last four lines are crazy.
 			})
+			if o.username != list.Owner {
+				subBox.Disable()
+			}
 			con.AddObject(subBox)
 			con.AddObject(widget.NewButton("view", func() {
 				o.canChan <- postCan(o, posts, list.Owner, 0, 50, listCan)
