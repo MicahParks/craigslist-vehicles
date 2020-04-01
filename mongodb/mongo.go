@@ -2,16 +2,14 @@ package mongodb
 
 import (
 	"context"
+	"io/ioutil"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"gitlab.com/MicahParks/cano-cars/types"
-)
-
-const (
-	uri = "mongodb://0.0.0.0:27777/admin"
 )
 
 func InsertPosts(collection *mongo.Collection, posts []*types.Post) error {
@@ -27,7 +25,11 @@ func InsertPosts(collection *mongo.Collection, posts []*types.Post) error {
 }
 
 func Init(collection string) (*mongo.Collection, error) {
-	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
+	uriBytes, err := ioutil.ReadFile("mongo.uri")
+	if err != nil {
+		return nil, err
+	}
+	client, err := mongo.NewClient(options.Client().ApplyURI(strings.TrimSpace(string(uriBytes))))
 	if err != nil {
 		return nil, err
 	}
