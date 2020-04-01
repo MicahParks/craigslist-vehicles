@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"gitlab.com/MicahParks/cano-cars/types"
+	"gitlab.com/MicahParks/craigslist-vehicles/types"
 )
 
 func InsertPosts(collection *mongo.Collection, posts []*types.Post) error {

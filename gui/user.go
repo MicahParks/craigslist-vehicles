@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 
-	"gitlab.com/MicahParks/cano-cars/types"
+	"gitlab.com/MicahParks/craigslist-vehicles/types"
 )
 
 var (

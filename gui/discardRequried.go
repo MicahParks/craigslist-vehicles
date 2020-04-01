@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"gitlab.com/MicahParks/cano-cars/types"
+	"gitlab.com/MicahParks/craigslist-vehicles/types"
 )
 
 func discardRequired(p *types.Post, discard []string, required []string) bool {

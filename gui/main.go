@@ -9,8 +9,8 @@ import (
 	"fyne.io/fyne/widget"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"gitlab.com/MicahParks/cano-cars/mongodb"
-	"gitlab.com/MicahParks/cano-cars/types"
+	"gitlab.com/MicahParks/craigslist-vehicles/mongodb"
+	"gitlab.com/MicahParks/craigslist-vehicles/types"
 )
 
 // TODO List's don't unshare.

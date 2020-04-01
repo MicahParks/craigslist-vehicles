@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"gitlab.com/MicahParks/cano-cars/types"
+	"gitlab.com/MicahParks/craigslist-vehicles/types"
 )
 
 func getPosts(o *orb, query bson.M, opts ...*options.FindOptions) (posts []*types.Post, err error) {

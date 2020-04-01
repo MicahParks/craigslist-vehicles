@@ -11,8 +11,8 @@ import (
 
 	"github.com/gocolly/colly/v2"
 
-	"gitlab.com/MicahParks/cano-cars/mongodb"
-	"gitlab.com/MicahParks/cano-cars/types"
+	"gitlab.com/MicahParks/craigslist-vehicles/mongodb"
+	"gitlab.com/MicahParks/craigslist-vehicles/types"
 )
 
 // TODO Too many models. Make it a client side thing.
@@ -28,7 +28,7 @@ var (
 )
 
 func main() {
-	l := log.New(os.Stdout, "cano cars scraper: ", log.LstdFlags|log.LUTC|log.Lshortfile)
+	l := log.New(os.Stdout, "scraper: ", log.LstdFlags|log.LUTC|log.Lshortfile)
 	collection, err := mongodb.Init("Posts")
 	if err != nil {
 		l.Fatalln(err.Error())

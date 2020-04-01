@@ -6,7 +6,7 @@ import (
 
 	"fyne.io/fyne/widget"
 
-	"gitlab.com/MicahParks/cano-cars/types"
+	"gitlab.com/MicahParks/craigslist-vehicles/types"
 )
 
 type postRow struct {
