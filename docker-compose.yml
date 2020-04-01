@@ -1,7 +1,7 @@
 version: '3.1'
 services:
-  some-db:
-    container_name: some-db
+  mongo-cv:
+    container_name: mongo-cv
     image: mongo
     ports:
       - 9000:27017
