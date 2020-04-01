@@ -1,6 +1,7 @@
 version: '3.1'
 services:
   some-db:
+    command: "mongod --auth"
     container_name: some-db
     image: mongo
     ports:
