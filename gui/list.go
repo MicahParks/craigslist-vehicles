@@ -50,7 +50,7 @@ func myLists(o *orb) (mine, shared []*types.List, err error) {
 	sharedQuery := bson.D{
 		{"subs", o.username},
 	}
-	cursor, err = o.presetCol.Find(context.TODO(), sharedQuery)
+	cursor, err = o.listCol.Find(context.TODO(), sharedQuery)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -67,7 +67,7 @@ func myLists(o *orb) (mine, shared []*types.List, err error) {
 }
 
 func newList(o *orb, name string) (*types.List, error) {
-	list := &types.List{Id: o.username + name, Name: name, Owner: o.username}
+	list := &types.List{Id: o.username + name, Name: name, Owner: o.username, Subs: make([]string, 0)}
 	if res := o.listCol.FindOne(context.TODO(), list); errors.Is(res.Err(), mongo.ErrNoDocuments) {
 		if _, err := o.listCol.InsertOne(context.TODO(), list); err != nil {
 			return nil, err

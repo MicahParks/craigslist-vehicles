@@ -15,8 +15,18 @@ func listCan(o *orb) *fyne.Container {
 	if err != nil {
 		o.l.Fatalln(err.Error())
 	}
-	con := fyne.NewContainerWithLayout(layout.NewGridLayout(4))
-	for _, list := range append(lists, shared...) {
+	ownedLists := fyne.NewContainerWithLayout(layout.NewGridLayout(4))
+	ownedBox := widget.NewGroup("mine", ownedLists)
+	sharedLists := fyne.NewContainerWithLayout(layout.NewGridLayout(4))
+	sharedBox := widget.NewGroup("shared with me", sharedLists)
+	groups := widget.NewVBox(ownedBox, sharedBox)
+	for _, j := range append(lists, shared...) {
+		list := j
+		var con *fyne.Container
+		con = sharedLists
+		if list.Owner == o.username {
+			con = ownedLists
+		}
 		con.AddObject(widget.NewLabel(list.Name))
 		if len(list.Posts) > 0 {
 			query := bson.M{"_id": bson.M{"$in": list.Posts}}
@@ -71,7 +81,7 @@ func listCan(o *orb) *fyne.Container {
 		}
 		o.canChan <- listCan(o)
 	}))
-	v := widget.NewVBox(con, h)
+	v := widget.NewVBox(groups, h)
 	back := widget.NewButton("back", func() {
 		o.canChan <- homeCan(o)
 	})
