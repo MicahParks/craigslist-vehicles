@@ -73,12 +73,16 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 			}
 			o.canChan <- postCan(o, actual, preset.Owner, 0, 50, presetCan)
 		}))
-		h.Append(widget.NewButton("del", func() {
+		delButt := widget.NewButton("del", func() {
 			if err := deletePreset(o, preset.Id); err != nil {
 				o.l.Fatalln(err.Error())
 			}
 			o.canChan <- presetCan(o)
-		}))
+		})
+		if preset.Owner != o.username {
+			delButt.Disable()
+		}
+		h.Append(delButt)
 		con.AddObject(h)
 		for k := range preset.Query {
 			switch k {
