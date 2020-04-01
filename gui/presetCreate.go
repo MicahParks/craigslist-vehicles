@@ -55,8 +55,9 @@ func presetCreationCan(o *orb) *fyne.Container {
 		"volkswagen",
 		"volvo",
 	}
+	trueFalse := []string{"true", "false"}
 
-	candidateCheck := widget.NewCheck("", func(_ bool) {})
+	candidateCheck := widget.NewRadio(trueFalse, func(_ string) {})
 	candidateUse := widget.NewCheck("use", func(_ bool) {})
 	cH := widget.NewHBox(candidateCheck, candidateUse)
 	candidateF := widget.NewFormItem("candidate", cH)
@@ -73,7 +74,7 @@ func presetCreationCan(o *orb) *fyne.Container {
 	discardBox.SetPlaceHolder("discard1, discard2")
 	discardF := widget.NewFormItem("discard", discardBox)
 
-	linkCheck := widget.NewCheck("", func(_ bool) {})
+	linkCheck := widget.NewRadio(trueFalse, func(_ string) {})
 	linkUse := widget.NewCheck("use", func(_ bool) {})
 	lH := widget.NewHBox(linkCheck, linkUse)
 	linkF := widget.NewFormItem("has link", lH)
@@ -119,9 +120,9 @@ func presetCreationCan(o *orb) *fyne.Container {
 		if err != nil {
 			o.l.Fatalln(err.Error())
 		}
-		if err = p.MakeQuery(o.username+strconv.Itoa(len(presets)), candidateCheck.Checked, candidateUse.Checked,
-			capPercentBox.Text, colorBox.Selected, discardBox.Text, linkCheck.Checked, linkUse.Checked,
-			makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, shares, subdomainBox.Text,
+		if err = p.MakeQuery(o.username+strconv.Itoa(len(presets)), candidateCheck.Selected == "true",
+			candidateUse.Checked, capPercentBox.Text, colorBox.Selected, discardBox.Text, linkCheck.Selected == "true",
+			linkUse.Checked, makeBox.Selected, odoBox.Text, priceBox.Text, requiredBox.Text, shares, subdomainBox.Text,
 			yearBox.Text); err != nil {
 			o.l.Println(err.Error())
 			return
