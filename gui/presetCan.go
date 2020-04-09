@@ -13,7 +13,7 @@ import (
 )
 
 func presetCan(o *orb) *fyne.Container {
-	own, sub, err := myPresets(o)
+	everyone, own, sub, err := myPresets(o)
 	if err != nil {
 		o.l.Fatalln(err.Error())
 	}
@@ -24,10 +24,10 @@ func presetCan(o *orb) *fyne.Container {
 		o.canChan <- homeCan(o)
 	})
 	v := widget.NewVBox(createPresetBox, back)
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, v, nil, nil), v, presetPreview(o, own, sub))
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, v, nil, nil), v, presetPreview(o, everyone, own, sub))
 }
 
-func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
+func presetPreview(o *orb, everyone, owner, sub []*types.Preset) *fyne.Container {
 	header := fyne.NewContainerWithLayout(layout.NewGridLayout(12),
 		widget.NewLabel("use/del"),
 		widget.NewLabel("candidate"),
@@ -50,7 +50,8 @@ func presetPreview(o *orb, owner, sub []*types.Preset) *fyne.Container {
 	sharedBox := widget.NewGroup("shared with me", sharedCon)
 	vCon := widget.NewVBox(everyoneBox, mineBox, sharedBox)
 	var con *fyne.Container
-	for _, preset := range append(owner, sub...) {
+	for _, p := range append(everyone, append(owner, sub...)...) {
+		preset := p
 		presetLabel := make([]*widget.Label, 11)
 		suffix := ",\n"
 		con = sharedCon

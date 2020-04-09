@@ -116,7 +116,7 @@ func presetCreationCan(o *orb) *fyne.Container {
 	yearF := widget.NewFormItem("made after", yearBox)
 
 	submit := widget.NewButton("create", func() {
-		presets, _, err := myPresets(o)
+		_, presets, _, err := myPresets(o)
 		if err != nil {
 			o.l.Fatalln(err.Error())
 		}

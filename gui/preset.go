@@ -24,7 +24,7 @@ func insertPreset(o *orb, preset *types.Preset, opts ...*options.InsertOneOption
 	return nil
 }
 
-func myPresets(o *orb) (own, shared []*types.Preset, err error) {
+func myPresets(o *orb) (everyone, own, shared []*types.Preset, err error) {
 	shared = make([]*types.Preset, 0)
 	own = make([]*types.Preset, 0)
 	ownQuery := bson.M{
@@ -32,20 +32,30 @@ func myPresets(o *orb) (own, shared []*types.Preset, err error) {
 	}
 	cursor, err := o.presetCol.Find(context.TODO(), ownQuery)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	if err = cursor.All(context.TODO(), &own); err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	sharedQuery := bson.D{
 		{"subs", o.username},
 	}
 	cursor, err = o.presetCol.Find(context.TODO(), sharedQuery)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	if err = cursor.All(context.TODO(), &shared); err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
-	return own, shared, nil
+	everyoneQuery := bson.M{
+		"everyone": true,
+	}
+	cursor, err = o.presetCol.Find(context.TODO(), everyoneQuery)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	if err = cursor.All(context.TODO(), &everyone); err != nil {
+		return nil, nil, nil, err
+	}
+	return
 }

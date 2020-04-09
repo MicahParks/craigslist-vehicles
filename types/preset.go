@@ -102,7 +102,7 @@ func (p *Preset) MakeQuery(id string, candidate, candidateUse bool, capPercent, 
 		if err != nil {
 			return err
 		}
-		query["year"] = bson.M{"$gte": year}
+		query["year"] = bson.M{"$gte": hold}
 		p.Year = hold
 	}
 	p.Query = query
