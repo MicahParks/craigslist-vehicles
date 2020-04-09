@@ -29,9 +29,14 @@ var (
 
 func main() {
 	l := log.New(os.Stdout, "scraper: ", log.LstdFlags|log.LUTC|log.Lshortfile)
-	collection, err := mongodb.Init("Posts")
+	collection, exists, err := mongodb.PostsExist()
 	if err != nil {
 		l.Fatalln(err.Error())
+	}
+	if exists {
+		if err = mongodb.DropCollection(collection); err != nil {
+			l.Fatalln(err)
+		}
 	}
 	for _, subdomain := range Subdomains {
 		println(subdomain)
