@@ -66,6 +66,31 @@ func myLists(o *orb) (mine, shared []*types.List, err error) {
 	return mine, shared, nil
 }
 
+func myCandidateList(o *orb) (*types.List, error) {
+	canStr := "Candidates"
+	existsQuery := bson.M{"_id": o.username + canStr}
+	if res := o.listCol.FindOne(context.TODO(), existsQuery); errors.Is(res.Err(), mongo.ErrNoDocuments) {
+		candidateList := &types.List{
+			Id:    o.username + canStr,
+			Posts: make([]string, 0),
+			Name:  canStr,
+			Owner: o.username,
+			Subs:  make([]string, 0),
+		}
+		if _, err := o.listCol.InsertOne(context.TODO(), candidateList); err != nil {
+			return nil, err
+		}
+		o.l.Printf("created candidate list for user %s", o.username)
+		return candidateList, nil
+	} else {
+		candidateList := &types.List{}
+		if err := res.Decode(candidateList); err != nil {
+			return nil, err
+		}
+		return candidateList, nil
+	}
+}
+
 func newList(o *orb, name string) (*types.List, error) {
 	list := &types.List{Id: o.username + name, Name: name, Owner: o.username, Subs: make([]string, 0)}
 	if res := o.listCol.FindOne(context.TODO(), list); errors.Is(res.Err(), mongo.ErrNoDocuments) {

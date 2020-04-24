@@ -10,16 +10,17 @@ import (
 )
 
 type postRow struct {
-	urlBox       *widget.Hyperlink
-	priceBox     *widget.Label
-	makeBox      *widget.Label
-	odoBox       *widget.Label
-	yearBox      *widget.Label
-	colorBox     *widget.Label
-	linkBox      *widget.Check
-	candidateBox *widget.Check
-	titleBox     *widget.Label
-	post         *types.Post
+	urlBox        *widget.Hyperlink
+	priceBox      *widget.Label
+	makeBox       *widget.Label
+	odoBox        *widget.Label
+	yearBox       *widget.Label
+	colorBox      *widget.Label
+	linkBox       *widget.Check
+	candidateBox  *widget.Check
+	candidateButt *widget.Button
+	titleBox      *widget.Label
+	post          *types.Post
 }
 
 func rowVBoxes() []*widget.Box {
@@ -43,7 +44,7 @@ func (p *postRow) append(o *orb, boxes []*widget.Box, posts []*types.Post, owner
 	boxes[4].Append(p.yearBox)
 	boxes[5].Append(p.colorBox)
 	boxes[6].Append(p.linkBox)
-	boxes[7].Append(p.candidateBox)
+	boxes[7].Append(widget.NewHBox(p.candidateBox, p.candidateButt))
 	boxes[8].Append(widget.NewButton("add", func() {
 		o.canChan <- listAdd(o, p.post, posts, owner, start, end)
 	}))
@@ -97,16 +98,38 @@ func (p *postRow) make(o *orb) error {
 	p.linkBox.Checked = p.post.Link
 	p.linkBox.Disable()
 
-	p.candidateBox = widget.NewCheck("", func(_ bool) {
-		p.candidateBox.Disable()
-		if err := updateCandidate(o, p.post); err != nil {
+	p.candidateBox = widget.NewCheck("", func(_ bool) {})
+	p.candidateBox.Checked = p.post.Candidate
+	p.candidateBox.Disable()
+
+	p.candidateButt = widget.NewButton("mark", func() {
+		if !p.post.Candidate {
+			p.candidateBox.Checked = true
+			p.candidateBox.Refresh()
+			p.post.Candidate = true
+			if err = updateCandidate(o, p.post); err != nil {
+				o.l.Fatalln(err.Error())
+			}
+		}
+		candidateList, err := myCandidateList(o)
+		if err != nil {
 			o.l.Fatalln(err.Error())
 		}
+		already := false
+		for _, post := range candidateList.Posts {
+			if post == p.post.Url {
+				already = true
+				break
+			}
+		}
+		if !already {
+			candidateList.Posts = append(candidateList.Posts, p.post.Url)
+			if err = updateList(o, candidateList.Id, candidateList); err != nil {
+				o.l.Fatalln(err.Error())
+			}
+		}
+		p.candidateButt.Disable()
 	})
-	p.candidateBox.Checked = p.post.Candidate
-	if p.post.Candidate {
-		p.candidateBox.Disable()
-	}
 
 	p.titleBox = widget.NewLabel(p.post.Title)
 	return nil

@@ -39,7 +39,7 @@ func listCan(o *orb) *fyne.Container {
 			}
 			subBox := widget.NewButton("share", func() {
 				userPop(o, &list.Subs, func() {
-					if err := updateList(o, list.Id, list); err != nil {
+					if err = updateList(o, list.Id, list); err != nil {
 						o.l.Fatalln(err.Error())
 					}
 				}).Show() // Lol the last four lines are crazy.
