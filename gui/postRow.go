@@ -59,7 +59,7 @@ func (p *postRow) attrBox() *widget.Form {
 	return form
 }
 
-func (p *postRow) make(o *orb) error {
+func (p *postRow) make(o *orb, candidateList *types.List) error {
 	u, err := url.Parse(p.post.Url)
 	if err != nil {
 		return err
@@ -111,10 +111,6 @@ func (p *postRow) make(o *orb) error {
 				o.l.Fatalln(err.Error())
 			}
 		}
-		candidateList, err := myCandidateList(o)
-		if err != nil {
-			o.l.Fatalln(err.Error())
-		}
 		already := false
 		for _, post := range candidateList.Posts {
 			if post == p.post.Url {
@@ -130,6 +126,11 @@ func (p *postRow) make(o *orb) error {
 		}
 		p.candidateButt.Disable()
 	})
+	for _, post := range candidateList.Posts {
+		if post == p.post.Url {
+			p.candidateButt.Disable()
+		}
+	}
 
 	p.titleBox = widget.NewLabel(p.post.Title)
 	return nil

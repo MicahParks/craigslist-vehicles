@@ -23,10 +23,14 @@ func postCan(o *orb, posts []*types.Post, owner string, start, end int, backFun 
 		widget.NewLabel("list"),
 	)
 	boxes := rowVBoxes()
+	candidateList, err := myCandidateList(o)
+	if err != nil {
+		o.l.Fatalln(err.Error())
+	}
 	for i, post := range posts {
 		if i >= start {
 			pR := postRow{post: post}
-			if err := pR.make(o); err != nil {
+			if err := pR.make(o, candidateList); err != nil {
 				o.l.Fatalln(err.Error())
 			}
 			pR.append(o, boxes, posts, owner, start, end)
