@@ -15,8 +15,6 @@ import (
 	"gitlab.com/MicahParks/craigslist-vehicles/types"
 )
 
-// TODO Too many models. Make it a client side thing.
-
 var (
 	Subdomains = []string{
 		"frederick",

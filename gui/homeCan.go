@@ -7,7 +7,6 @@ import (
 )
 
 func homeCan(o *orb) *fyne.Container {
-	// TODO Make listCan add button not suck and separate by ownership like preset.
 	if err := getUser(o); err != nil {
 		o.l.Fatalln(err.Error())
 	}
@@ -23,7 +22,6 @@ func homeCan(o *orb) *fyne.Container {
 	logoutBox := widget.NewButton("logout", func() {
 		o.username = ""
 		o.user = nil
-		// TODO Other logout stuff?
 		o.canChan <- loginCan(o)
 	})
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, logoutBox, nil, nil), logoutBox,
