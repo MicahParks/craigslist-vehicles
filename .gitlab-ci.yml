@@ -1,0 +1,18 @@
+image: "golang"
+
+stages:
+  - build-binary
+
+before_script:
+  - 'apt update && apt install libgl1-mesa-dev xorg-dev -y'
+  - 'go mod download'
+
+binary:
+  artifacts:
+    expose_as: 'binary'
+    name: ''
+    paths:
+      - './craigslistVehicles'
+    when: on_success
+  script: 'go build -o craigslistVehicles gui/*'
+  stage: build-binary
