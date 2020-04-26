@@ -10,7 +10,7 @@ before_script:
 binary:
   artifacts:
     expose_as: 'binary'
-    name: ''
+    name: 'craigslistVehicles'
     paths:
       - './craigslistVehicles'
     when: on_success
