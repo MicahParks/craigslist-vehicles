@@ -66,7 +66,7 @@ func main() {
 		userCol:   userCol,
 	}
 	a := app.New()
-	w := a.NewWindow("cars")
+	w := a.NewWindow("Craigslist Vehicles")
 	o.current = w.Canvas()
 	logs := widget.NewMultiLineEntry()
 	lW := &logWriter{w: logs}
