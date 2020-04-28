@@ -30,7 +30,7 @@ func presetCan(o *orb) *fyne.Container {
 
 func presetPreview(o *orb, everyone, owner, sub []*types.Preset) *fyne.Container {
 	header := fyne.NewContainerWithLayout(layout.NewGridLayout(12),
-		widget.NewLabel("share/use/del"),
+		widget.NewLabel("use/del"),
 		widget.NewLabel("candidate"),
 		widget.NewLabel("capitalization"),
 		widget.NewLabel("color"),
@@ -85,21 +85,7 @@ func presetPreview(o *orb, everyone, owner, sub []*types.Preset) *fyne.Container
 			delButt.Disable()
 		}
 		h.Append(delButt)
-		v := widget.NewVBox()
-		nowCon := con
-		shareButt := widget.NewButton("share", func() {
-			userPop(o, &preset.Subs, func() {
-				if err := updatePreset(o, preset.Id, preset); err != nil {
-					o.l.Fatalln(err.Error())
-				}
-			}).Show() // Lol the last four lines are crazy.
-		})
-		if nowCon != mineCon {
-			shareButt.Disable()
-		}
-		v.Append(shareButt)
-		v.Append(h)
-		con.AddObject(v)
+		con.AddObject(h)
 		for k := range preset.Query {
 			switch k {
 			case "candidate":
