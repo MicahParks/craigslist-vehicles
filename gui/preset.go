@@ -59,3 +59,12 @@ func myPresets(o *orb) (everyone, own, shared []*types.Preset, err error) {
 	}
 	return
 }
+
+func updatePreset(o *orb, presetId string, preset *types.Preset) error {
+	update := bson.M{"_id": presetId}
+	res := o.presetCol.FindOneAndReplace(context.TODO(), update, preset, options.FindOneAndReplace().SetBypassDocumentValidation(true))
+	if res.Err() != nil {
+		return res.Err()
+	}
+	return nil
+}
