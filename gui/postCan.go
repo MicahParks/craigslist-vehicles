@@ -11,6 +11,24 @@ import (
 )
 
 func postCan(o *orb, posts []*types.Post, owner string, start, end int, backFun func(*orb) *fyne.Container) *fyne.Container {
+	actual := make([]*types.Post, 0, len(posts))
+	for _, p := range posts {
+		good := true
+		if o.user.Deleted == nil {
+			o.user.Deleted = make([]string, 0)
+		} else {
+			for _, url := range o.user.Deleted {
+				if p.Url == url {
+					good = false
+					break
+				}
+			}
+		}
+		if good {
+			actual = append(actual, p)
+		}
+	}
+	posts = actual
 	header := fyne.NewContainerWithLayout(layout.NewGridLayout(9),
 		widget.NewLabel("link/del"),
 		widget.NewLabel("price"),

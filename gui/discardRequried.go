@@ -9,15 +9,6 @@ import (
 )
 
 func discardRequired(o *orb, p *types.Post, discard []string, required []string) bool {
-	if o.user.Deleted == nil {
-		o.user.Deleted = make([]string, 0)
-	} else {
-		for _, url := range o.user.Deleted {
-			if p.Url == url {
-				return false
-			}
-		}
-	}
 	titleBody := p.Title + "\n" + p.Text
 	titleBody = strings.ToLower(titleBody)
 	for _, v := range discard {
