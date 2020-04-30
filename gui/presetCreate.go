@@ -137,7 +137,7 @@ func presetCreationCan(o *orb) *fyne.Container {
 		}
 		actual := make([]*types.Post, 0, len(posts))
 		for _, post := range posts {
-			if discardRequired(post, p.Discard, p.Required) {
+			if discardRequired(o, post, p.Discard, p.Required) {
 				actual = append(actual, post)
 			}
 		}

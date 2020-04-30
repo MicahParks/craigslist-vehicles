@@ -61,6 +61,7 @@ type Preset struct {
 }
 
 type User struct {
+	Deleted  []string
 	Domains  []string
 	Username string `bson:"_id"`
 	Password string

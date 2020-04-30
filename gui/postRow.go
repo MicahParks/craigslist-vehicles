@@ -37,7 +37,23 @@ func rowVBoxes() []*widget.Box {
 }
 
 func (p *postRow) append(o *orb, boxes []*widget.Box, posts []*types.Post, owner string, start, end int) {
-	boxes[0].Append(p.urlBox)
+	delButt := widget.NewButton("del", func() {
+		if o.user.Deleted == nil {
+			o.user.Deleted = make([]string, 0)
+		}
+		o.user.Deleted = append(o.user.Deleted, p.post.Url)
+		if err := updateUser(o); err != nil {
+			o.l.Fatalln(err.Error())
+		}
+		newPosts := make([]*types.Post, 0, len(posts)-1)
+		for _, post := range posts {
+			if post != p.post {
+				newPosts = append(newPosts, post)
+			}
+		}
+		o.canChan <- postCan(o, newPosts, o.username, start, end, presetCan)
+	})
+	boxes[0].Append(widget.NewHBox(p.urlBox, delButt))
 	boxes[1].Append(p.priceBox)
 	boxes[2].Append(p.makeBox)
 	boxes[3].Append(p.odoBox)

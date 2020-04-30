@@ -12,7 +12,7 @@ import (
 
 func postCan(o *orb, posts []*types.Post, owner string, start, end int, backFun func(*orb) *fyne.Container) *fyne.Container {
 	header := fyne.NewContainerWithLayout(layout.NewGridLayout(9),
-		widget.NewLabel("link"),
+		widget.NewLabel("link/del"),
 		widget.NewLabel("price"),
 		widget.NewLabel("make"),
 		widget.NewLabel("odometer"),

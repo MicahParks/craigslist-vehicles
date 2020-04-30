@@ -117,3 +117,11 @@ func updateDomains(o *orb) error {
 	}
 	return nil
 }
+
+func updateUser(o *orb) error {
+	res := o.userCol.FindOneAndReplace(context.TODO(), bson.M{"_id": o.username}, o.user)
+	if res.Err() != nil {
+		return res.Err()
+	}
+	return nil
+}
