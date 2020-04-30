@@ -32,6 +32,12 @@ func listAdd(o *orb, post *types.Post, posts []*types.Post, owner string, start,
 			if err = updateList(o, l.Id, l); err != nil {
 				o.l.Fatalln(err.Error())
 			}
+			if l.Id == o.username+"Candidates" {
+				post.Candidate = true
+				if err = updateCandidate(o, post); err != nil {
+					o.l.Fatalln(err.Error())
+				}
+			}
 			o.canChan <- back
 		}))
 	}
