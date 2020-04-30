@@ -30,7 +30,7 @@ func postCan(o *orb, posts []*types.Post, owner string, start, end int, backFun 
 	for i, post := range posts {
 		if i >= start {
 			pR := postRow{post: post}
-			if err := pR.make(o, candidateList); err != nil {
+			if err = pR.make(o, candidateList); err != nil {
 				o.l.Fatalln(err.Error())
 			}
 			pR.append(o, boxes, posts, owner, start, end)
