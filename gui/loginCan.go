@@ -8,6 +8,7 @@ import (
 )
 
 func loginCan(o *orb) *widget.Box {
+	headerLabel := widget.NewLabel("Please login.")
 	passwordBox := widget.NewPasswordEntry()
 	passwordBox.SetPlaceHolder("password")
 	usernameBox := widget.NewEntry()
@@ -20,6 +21,7 @@ func loginCan(o *orb) *widget.Box {
 		if err != nil {
 			if errors.Is(err, errAuth) || errors.Is(err, errNotFound) {
 				o.l.Println(err.Error())
+				headerLabel.SetText("Invalid login. Please try again.")
 				return
 			}
 			o.l.Fatalln(err.Error())
@@ -28,7 +30,7 @@ func loginCan(o *orb) *widget.Box {
 	})
 	h := widget.NewHBox(loginInstead, submitBox)
 	return widget.NewVBox(
-		widget.NewLabel("login"),
+		headerLabel,
 		usernameBox,
 		passwordBox,
 		h,
