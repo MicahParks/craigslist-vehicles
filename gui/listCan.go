@@ -75,7 +75,7 @@ func listCan(o *orb) *fyne.Container {
 			o.l.Println("can't name list an empty string")
 			return
 		}
-		if _, err := newList(o, name); err != nil {
+		if _, err = newList(o, name); err != nil {
 			if errors.Is(err, errListExists) {
 				o.l.Printf("list with name %s already exists", name)
 				return

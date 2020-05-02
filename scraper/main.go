@@ -29,7 +29,7 @@ func main() {
 	l := log.New(os.Stdout, "scraper: ", log.LstdFlags|log.LUTC|log.Lshortfile)
 	collection, exists, err := mongodb.PostsExist()
 	if err != nil {
-		l.Fatalln(err.Error())
+		l.Println("Collection doesn't exist yet.")
 	}
 	if exists {
 		if err = mongodb.DropCollection(collection); err != nil {
