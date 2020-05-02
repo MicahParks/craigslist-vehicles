@@ -78,5 +78,9 @@ func PostsExist() (*mongo.Collection, bool, error) {
 			return col, true, nil
 		}
 	}
-	return nil, false, nil
+	col, err := Init("Posts")
+	if err != nil {
+		return nil, false, err
+	}
+	return col, true, nil
 }
