@@ -28,6 +28,17 @@ func listCan(o *orb) *fyne.Container {
 			con = ownedLists
 		}
 		con.AddObject(widget.NewLabel(list.Name))
+		subBox := widget.NewButton("share", func() {
+			userPop(o, &list.Subs, func() {
+				if err = updateList(o, list.Id, list); err != nil {
+					o.l.Fatalln(err.Error())
+				}
+			}).Show() // Lol the last four lines are crazy.
+		})
+		if o.username != list.Owner {
+			subBox.Disable()
+		}
+		con.AddObject(subBox)
 		if len(list.Posts) > 0 {
 			query := bson.M{"_id": bson.M{"$in": list.Posts}}
 			posts, err := getPosts(o, query)
@@ -37,17 +48,6 @@ func listCan(o *orb) *fyne.Container {
 			if list.Subs == nil {
 				list.Subs = make([]string, 0)
 			}
-			subBox := widget.NewButton("share", func() {
-				userPop(o, &list.Subs, func() {
-					if err = updateList(o, list.Id, list); err != nil {
-						o.l.Fatalln(err.Error())
-					}
-				}).Show() // Lol the last four lines are crazy.
-			})
-			if o.username != list.Owner {
-				subBox.Disable()
-			}
-			con.AddObject(subBox)
 			con.AddObject(widget.NewButton("view", func() {
 				o.canChan <- postCan(o, posts, list.Owner, 0, 50, listCan)
 			}))
