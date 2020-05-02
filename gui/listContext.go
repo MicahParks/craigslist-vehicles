@@ -21,6 +21,7 @@ func listAdd(o *orb, post *types.Post, posts []*types.Post, owner string, start,
 	form := widget.NewForm()
 	back := postCan(o, posts, owner, start, end, presetCan)
 	for _, l := range lists {
+		l := l
 		form.Append(l.Name, widget.NewButton("add", func() {
 			for _, p := range l.Posts {
 				if p == post.Url {
