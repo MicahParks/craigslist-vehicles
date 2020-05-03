@@ -34,6 +34,15 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 	micahs.Everyone = true
+
+	manzanoa := &types.Preset{}
+	if err = manzanoa.MakeQuery("manzanoa", false, false, "10", "red",
+		"", false, false, "nissan", "90000", "2000", "", make([]string, 0),
+		"richmond, lynchburg, frederick, washingtondc, norfolk", "1990"); err != nil {
+		log.Fatalln(err.Error())
+	}
+	manzanoa.Everyone = true
+
 	if _, err = col.InsertOne(context.TODO(), candidates); err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -41,6 +50,9 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 	if _, err = col.InsertOne(context.TODO(), micahs); err != nil {
+		log.Fatalln(err.Error())
+	}
+	if _, err = col.InsertOne(context.TODO(), manzanoa); err != nil {
 		log.Fatalln(err.Error())
 	}
 }
