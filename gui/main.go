@@ -9,8 +9,8 @@ import (
 	"fyne.io/fyne/widget"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"gitlab.com/MicahParks/craigslist-vehicles/mongodb"
-	"gitlab.com/MicahParks/craigslist-vehicles/types"
+	"github.com/MicahParks/craigslist-vehicles/mongodb"
+	"github.com/MicahParks/craigslist-vehicles/types"
 )
 
 type orb struct {

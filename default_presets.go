@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	"gitlab.com/MicahParks/craigslist-vehicles/mongodb"
-	"gitlab.com/MicahParks/craigslist-vehicles/types"
+	"github.com/MicahParks/craigslist-vehicles/mongodb"
+	"github.com/MicahParks/craigslist-vehicles/types"
 )
 
 func main() {

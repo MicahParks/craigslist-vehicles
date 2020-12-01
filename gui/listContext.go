@@ -3,7 +3,7 @@ package main
 import (
 	"fyne.io/fyne/widget"
 
-	"gitlab.com/MicahParks/craigslist-vehicles/types"
+	"github.com/MicahParks/craigslist-vehicles/types"
 )
 
 func listAdd(o *orb, post *types.Post, posts []*types.Post, owner string, start, end int) *widget.Form {

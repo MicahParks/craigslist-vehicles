@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"gitlab.com/MicahParks/craigslist-vehicles/types"
+	"github.com/MicahParks/craigslist-vehicles/types"
 )
 
 var (
