@@ -1,4 +1,4 @@
-module gitlab.com/MicahParks/craigslist-vehicles
+module github.com/MicahParks/craigslist-vehicles
 
 go 1.14
 
